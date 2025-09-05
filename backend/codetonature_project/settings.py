@@ -1,3 +1,4 @@
+AUTH_USER_MODEL = 'users.CustomUser'
 """
 Django settings for codetonature_project project.
 
