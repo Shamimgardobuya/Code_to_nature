@@ -1,3 +1,4 @@
+AUTH_USER_MODEL = 'users.CustomUser'
 """
 Django settings for codetonature_project project.
 
@@ -40,12 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
-    'coding',
-    'activities',
-    'rewards',
-    'leaderboard',
-    'common'
+    'apps.users',
+    'apps.coding',
+    'apps.activities',
+    'apps.rewards',
+    'apps.leaderboard',
+    'apps.common'
 ]
 
 MIDDLEWARE = [
