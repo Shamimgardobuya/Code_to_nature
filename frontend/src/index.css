@@ -1,70 +1,155 @@
-@import "tailwindcss";
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* Code-to-Nature Design System - Eco-inspired theme
+All colors MUST be HSL.
+*/
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
+@layer base {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    /* Nature-inspired background palette */
+    --background: 120 40% 98%;
+    --foreground: 140 30% 15%;
+
+    /* Card and surface colors */
+    --card: 0 0% 100%;
+    --card-foreground: 140 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 140 30% 15%;
+
+    /* Primary - Forest Green palette */
+    --primary: 140 60% 35%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 140 60% 30%;
+    --primary-light: 140 45% 85%;
+
+    /* Secondary - Sage Green palette */
+    --secondary: 120 25% 75%;
+    --secondary-foreground: 140 30% 15%;
+    --secondary-hover: 120 25% 70%;
+
+    /* Muted tones */
+    --muted: 120 15% 94%;
+    --muted-foreground: 140 15% 45%;
+
+    /* Accent - Nature blue */
+    --accent: 200 70% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Success - Growth green */
+    --success: 120 70% 50%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning - Sun yellow */
+    --warning: 45 90% 60%;
+    --warning-foreground: 140 30% 15%;
+
+    /* Destructive - Earth red */
+    --destructive: 10 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs */
+    --border: 120 20% 85%;
+    --input: 120 20% 90%;
+    --ring: 140 60% 35%;
+
+    --radius: 0.75rem;
+
+    /* Nature-inspired gradients */
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(var(--primary)),
+      hsl(140 70% 45%)
+    );
+    --gradient-success: linear-gradient(
+      135deg,
+      hsl(var(--success)),
+      hsl(120 80% 60%)
+    );
+    --gradient-nature: linear-gradient(
+      135deg,
+      hsl(120 45% 85%),
+      hsl(140 40% 90%)
+    );
+
+    /* Eco-friendly shadows */
+    --shadow-nature: 0 4px 20px -8px hsl(var(--primary) / 0.2);
+    --shadow-glow: 0 0 30px hsl(var(--primary) / 0.15);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
-  a:hover {
-    color: #747bff;
+
+  .dark {
+    /* Dark mode - Darker nature tones */
+    --background: 140 20% 8%;
+    --foreground: 120 15% 92%;
+
+    --card: 140 15% 12%;
+    --card-foreground: 120 15% 92%;
+
+    --popover: 140 15% 12%;
+    --popover-foreground: 120 15% 92%;
+
+    --primary: 140 50% 50%;
+    --primary-foreground: 140 20% 8%;
+    --primary-hover: 140 50% 55%;
+    --primary-light: 140 30% 25%;
+
+    --secondary: 140 15% 20%;
+    --secondary-foreground: 120 15% 92%;
+    --secondary-hover: 140 15% 25%;
+
+    --muted: 140 15% 15%;
+    --muted-foreground: 120 10% 65%;
+
+    --accent: 200 60% 55%;
+    --accent-foreground: 140 20% 8%;
+
+    --success: 120 60% 45%;
+    --success-foreground: 140 20% 8%;
+
+    --warning: 45 80% 55%;
+    --warning-foreground: 140 20% 8%;
+
+    --destructive: 10 60% 50%;
+    --destructive-foreground: 120 15% 92%;
+
+    --border: 140 15% 18%;
+    --input: 140 15% 18%;
+    --ring: 140 50% 50%;
+
+    --sidebar-background: 140 20% 8%;
+    --sidebar-foreground: 120 15% 92%;
+    --sidebar-primary: 140 50% 50%;
+    --sidebar-primary-foreground: 140 20% 8%;
+    --sidebar-accent: 140 15% 15%;
+    --sidebar-accent-foreground: 120 15% 92%;
+    --sidebar-border: 140 15% 15%;
+    --sidebar-ring: 140 50% 50%;
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
