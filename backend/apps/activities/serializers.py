@@ -3,7 +3,7 @@ from .models import Activity
 class ActivitiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ['id', 'user', 'duration', 'verification_proof','status']
+        fields = ['id', 'user', 'duration', 'verification_proof','status', 'location']
         read_only_field= ['id', 'user']
         
         def validate_verification_proof(self, value):

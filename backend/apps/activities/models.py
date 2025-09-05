@@ -13,5 +13,8 @@ class Activity(models.Model):
         ('REJECTED', 'rejected')
     ]
     status = models.CharField(choices=statuses, default='PENDING')
-    approved_on = models.DateTimeField(null=True)
+    verified_on = models.DateTimeField(null=True)
+    location = models.CharField(max_length=70, null=True)
     
+    class Meta:
+        verbose_name_plural = 'Activities'

@@ -5,7 +5,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.users.models import CustomUser
-
+from datetime import datetime
 
 # Create your views here.
 
@@ -18,6 +18,7 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
         activity = self.get_object()
         activity.status = 'VERIFIED'
         activity.user = request.user
+        activity.verified_on = datetime.now()
         activity.save()
 
         serializer = self.get_serializer(activity)
