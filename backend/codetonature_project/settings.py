@@ -15,6 +15,9 @@ from pathlib import Path
 import sys, os
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
+apps_path = os.path.join(BASE_DIR, "apps")
+if apps_path not in sys.path:
+    sys.path.insert(0, apps_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
