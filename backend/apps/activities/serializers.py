@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from activities.models import Activity
+from .models import Activity
 class ActivitiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity

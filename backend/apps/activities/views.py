@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .serializers import ActivitiesSerializer
-from .models import OutdoorActivity
+from .models import Activity
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -10,7 +10,7 @@ from apps.users.models import CustomUser
 # Create your views here.
 
 class ActivitiesViewSet(viewsets.ModelViewSet):
-    queryset = OutdoorActivity.objects.all()
+    queryset = Activity.objects.all()
     serializer_class = ActivitiesSerializer
     
     @action(detail=True, methods=['post'])
