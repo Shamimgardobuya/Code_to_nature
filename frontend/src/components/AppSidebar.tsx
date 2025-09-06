@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import {
   Sidebar,
   SidebarContent,
@@ -11,10 +11,10 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
-  useSidebar,
-} from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+  useSidebar }
+  from "./ui/sidebar"
+//import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Button } from "./ui/button";
 import { 
   Leaf, 
   Code, 
