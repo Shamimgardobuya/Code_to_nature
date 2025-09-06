@@ -80,7 +80,7 @@ export function AppSidebar() {
       className={`border-r-2 border-border/50 ${isCollapsed ? "w-16" : "w-72"}`}
     >
       {/* Header */}
-      <SidebarHeader className="border-b border-border/50 p-4">
+      <SidebarHeader className="border-b border-border/50 p-9">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-primary to-success rounded-xl flex items-center justify-center flex-shrink-0">
             <Leaf className="w-5 h-5 text-white" />
@@ -100,7 +100,7 @@ export function AppSidebar() {
 
       <SidebarContent className="px-2">
         {/* User Info */}
-        {!isCollapsed && (
+        {/* {!isCollapsed && (
           <div className="p-4 bg-gradient-to-r from-primary/10 to-success/10 rounded-lg m-2 mb-4">
             <div className="flex items-center gap-3">
               <Avatar className="w-10 h-10">
@@ -124,7 +124,7 @@ export function AppSidebar() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Navigation */}
         <SidebarGroup>
@@ -161,7 +161,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Quick Stats */}
-        {!isCollapsed && (
+        {/* {!isCollapsed && (
           <SidebarGroup>
             <SidebarGroupLabel>Quick Stats</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -181,7 +181,7 @@ export function AppSidebar() {
               </div>
             </SidebarGroupContent>
           </SidebarGroup>
-        )}
+        )} */}
       </SidebarContent>
 
       {/* Footer */}
