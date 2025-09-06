@@ -14,16 +14,16 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
     queryset = Activity.objects.all()
     serializer_class = ActivitiesSerializer
     
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'])#custom viewset function
     def verify_activity(self, request, pk=None):
         activity = self.get_object()
         statuses = ['PENDING', 'REJECTED'] #do not verify an already verified activity
         if activity.status in statuses:
-            activity.status = 'VERIFIED'
+            activity.status = 'VERIFIED' #assigning new value of status
             activity.verified_on = datetime.now()
             activity.save()
             
-            unlock_credits(activity)
+            unlock_credits(activity) #performs unlocking the credit
             serializer = self.get_serializer(activity)
 
             return Response(

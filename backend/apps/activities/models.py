@@ -6,7 +6,7 @@ from auditlog.registry import auditlog
 class Activity(models.Model):
 
 
-    user = models.ForeignKey(CustomUser, null=False, on_delete=models.PROTECT)
+    user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
     duration = models.IntegerField(null=False)
     verification_proof = models.ImageField(upload_to='activities/', null=False)
     statuses = [
