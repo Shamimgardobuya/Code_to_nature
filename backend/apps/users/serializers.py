@@ -37,10 +37,15 @@ class ProfileSerializer(serializers.ModelSerializer):
             'longest_streak',
             'friends'
         ]
+        read_only_fields = ['user']
 
     def update(self, instance, validated_data):
         """Update profile"""
+        friends = validated_data.pop('friends', None)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
+        instance.save()
+        if friends is not None:
+            instance.friends.set(friends)
         return instance
     

@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
 class Profile(models.Model):
     """User Profile"""
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to="profiles/", blank=True)
+    profile_pic = models.ImageField(upload_to="profiles/", blank=True, null=True)
     github_username = models.CharField(max_length=39)
     github_token = models.UUIDField(blank=True, null=True)
     eco_credits = models.IntegerField(default=0)
