@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from .models import Activity
+from datetime import date
 class ActivitiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ['id', 'user', 'duration', 'verification_proof','status', 'location']
+        fields = ['id', 'user', 'duration', 'verification_proof','status', 'location', 'activity_date', 'description', 'activity']
         read_only_field= ['id', 'user']
         
         def validate_verification_proof(self, value):
@@ -23,3 +24,7 @@ class ActivitiesSerializer(serializers.ModelSerializer):
 
             return value
                     
+        def validate_activity_date(self, value):
+            if value > date.today():
+                raise serializers.ValidationError("Cannot add an activity of a future date")
+            return value

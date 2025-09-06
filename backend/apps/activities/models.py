@@ -1,5 +1,6 @@
 from django.db import models
 from apps.users.models import CustomUser
+from datetime import date
 # Create your models here.
 class Activity(models.Model):
 
@@ -15,6 +16,10 @@ class Activity(models.Model):
     status = models.CharField(choices=statuses, default='PENDING')
     verified_on = models.DateTimeField(null=True)
     location = models.CharField(max_length=70, null=True)
+    activity_date = models.DateField(default=date.today)
+    description = models.TextField(null=True)
+    activity = models.CharField(max_length=50, default='Other')
+
     
     class Meta:
         verbose_name_plural = 'Activities'

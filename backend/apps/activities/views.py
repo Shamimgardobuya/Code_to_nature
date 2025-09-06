@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.users.models import CustomUser
 from datetime import datetime
+from .utils import unlock_credits
 
 # Create your views here.
 
@@ -14,16 +15,23 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
     serializer_class = ActivitiesSerializer
     
     @action(detail=True, methods=['post'])
-    def verify_activity(self, request):
+    def verify_activity(self, request, pk=None):
         activity = self.get_object()
-        activity.status = 'VERIFIED'
-        activity.user = request.user
-        activity.verified_on = datetime.now()
-        activity.save()
+        statuses = ['PENDING', 'REJECTED'] #do not verify an already verified activity
+        if activity.status in statuses:
+            activity.status = 'VERIFIED'
+            activity.verified_on = datetime.now()
+            activity.save()
+            
+            unlock_credits(activity)
+            serializer = self.get_serializer(activity)
 
-        serializer = self.get_serializer(activity)
-
+            return Response(
+                        {"message": f"Activity verified successfully, {serializer.data}"},
+                        status=status.HTTP_201_CREATED,
+            )
         return Response(
-                    {"message": f"Activity verified successfully, {serializer.data}"},
-                    status=status.HTTP_201_CREATED,
-        )
+                        {"message": f"Activity already verified, {serializer.data}"},
+                        status=status.HTTP_400_BAD_REQUEST,
+            )
+        
