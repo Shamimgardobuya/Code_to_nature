@@ -1,6 +1,7 @@
 from django.db import models
 from apps.users.models import CustomUser
 from datetime import date
+from auditlog.registry import auditlog
 # Create your models here.
 class Activity(models.Model):
 
@@ -23,3 +24,4 @@ class Activity(models.Model):
     
     class Meta:
         verbose_name_plural = 'Activities'
+auditlog.register(Activity)
