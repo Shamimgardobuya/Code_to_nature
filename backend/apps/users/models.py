@@ -28,3 +28,8 @@ class Profile(models.Model):
         """Validates Streaks"""
         if (self.current_streak >= self.longest_streak):
             self.longest_streak = self.current_streak
+            
+    def credit_validation(self):
+        if self.eco_credits < 0 or self.locked_credits < 0:
+            return {"Credits must be positive integer"}
+
