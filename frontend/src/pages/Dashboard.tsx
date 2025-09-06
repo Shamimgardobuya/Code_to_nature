@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import EcoCard from "@/components/EcoCard";
-import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import EcoCard from "../components/EcoCard";
+import { useAuth } from "../contexts/AuthContext";
 import { 
   Leaf, 
   Code, 

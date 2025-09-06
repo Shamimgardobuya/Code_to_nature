@@ -239,11 +239,11 @@
 
 // export default RewardsStore;
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import React, { useState } from "react"
+import { Button } from "../components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
+import { Badge } from "../components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { 
   Gift, 
   Coins, 
@@ -259,8 +259,8 @@ import {
   ShoppingBag,
   Heart
 } from "lucide-react"
-import { useAuth } from "@/contexts/AuthContext"
-import { useToast } from "@/hooks/use-toast"
+import { useAuth } from "../contexts/AuthContext"
+import { useToast } from "../hooks/use-toast"
 
 // Define types for our data
 interface Reward {
@@ -269,7 +269,7 @@ interface Reward {
   description: string
   cost: number
   category: "Environmental" | "Merchandise" | "Digital"
-  icon: JSX.Element
+  icon: React.JSX.Element
   available: boolean
   popular: boolean
 }
