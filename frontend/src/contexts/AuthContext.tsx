@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import mockData from '@/data/mockUsers.json';
+import { createContext, useContext, useState, useEffect} from 'react';
+import type { ReactNode } from 'react';
+import mockData from '../data/mockUsers.json';
 
 interface User {
   id: string;

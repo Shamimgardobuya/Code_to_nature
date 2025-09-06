@@ -1,6 +1,6 @@
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Badge } from "@/components/ui/badge";
-// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+// import { Badge } from "../components/ui/badge";
+// import { Avatar, AvatarFallback } from "../components/ui/avatar";
 // import { 
 //   Trophy, 
 //   Medal, 
@@ -279,12 +279,12 @@
 
 // export default Leaderboard;
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
+import { Badge } from "../components/ui/badge"
+import { Avatar, AvatarFallback } from "../components/ui/avatar"
 import { Trophy, Medal, Award, Crown, Coins } from "lucide-react"
-import { useAuth } from "@/contexts/AuthContext"
-import { mockLeaderboard } from "@/lib/mock-data"
+import { useAuth } from "../contexts/AuthContext"
+import { mockLeaderboard } from "../lib/mock-data"
 
 export default function LeaderboardPage() {
   const { user } = useAuth()
