@@ -12,18 +12,3 @@ def add_locked_credits(sender, instance, created, **kwargs):
         profile = instance.user
         profile.locked_credits += instance.credits_awarded
         profile.save()
-
-
-@receiver(post_save, sender=Profile)
-def create_github_coding_session(sender, instance, created, **kwargs):
-    """Signal to create coding session daily"""
-    if instance.github_username:
-        today = instance.coding_sessions.filter(
-            source='github',
-            created_at__date=datetime.today().date()
-        ).exists()
-        if not today:
-            CodingSession.objects.create(
-                user=instance,
-                source='github'
-            )
