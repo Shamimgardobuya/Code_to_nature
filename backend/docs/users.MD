@@ -5,38 +5,62 @@
 POST https://localhost/api/users/
 body
 {
-    "email": "johndoe@example.com",
-    "password": "test12345"
+  "email": "johndoe@example.com",
+  "password": "test12345"
 }
-success: 201
+
+response
+{
+  "success": true,
+  "data": {
+    "email": "johndoe@example.com",
+    "username": "johndoe"
+  }
+}
 
 ***Login user***
 POST https://localhost/api/token/
 body
 {
-    "email": "johndoe@example.com",
-    "password": "test12345"
+  "email": "johndoe@example.com",
+  "password": "test12345"
 }
+
 response: {
-    refresh: "....",
-    access: "....",
+  refresh: "....",
+  access: "....",
 }
 copy access token and set postman authorization type to Bearer Token
 ![Postman Bearer Token Example](screenshots/tokenexample.jpeg)
-success: 200
 
 Note: Access token is required for all authenticated endpoints
 
 ***Get User(s)***
 Make sure that access token is set in headers
-GET https://localhost/api/users/
+GET https://localhost/api/users/ (admin route only)
 GET https://localhost/api/users/{id}/
 
 ***User Profile***
 User Profile is created when user is first created
 Make sure that access token is set in headers
-GET https://localhost/api/profiles/
+GET https://localhost/api/profiles/ (admin route only)
 GET https://localhost/api/profiles/{id}/
+
+response
+{
+  "success": true,
+    "data": {
+    "user": {id},
+    "profile_pic": null,
+    "github_username": "",
+    "github_token": null,
+    "eco_credits": 0,
+    "locked_credits": 0,
+    "current_streak": 0,
+    "longest_streak": 0,
+    "friends": []
+  }
+}
 
 ***Edit Profile***
 All fields
@@ -52,7 +76,22 @@ body
   "longest_streak": 7,
   "friends": []
 }
-success: 200
+
+response
+{
+  "success": true,
+  "data": {
+    "user": {id},
+    "profile_pic": null,
+    "github_username": "newgithubuser",
+    "github_token": null,
+    "eco_credits": 10,
+    "locked_credits": 5,
+    "current_streak": 2,
+    "longest_streak": 7,
+    "friends": []
+  }
+}
 
 edit select fields
 PATCH https://localhost/api/profiles/{id}/
@@ -60,4 +99,19 @@ body
 {
   "github_username": "updatedgithub"
 }
-success: 200
+
+response
+{
+  "success": true,
+  "data": {
+    "user": {id},
+    "profile_pic": null,
+    "github_username": "updatedgithub",
+    "github_token": null,
+    "eco_credits": 10,
+    "locked_credits": 5,
+    "current_streak": 2,
+    "longest_streak": 7,
+    "friends": []
+  }
+}
