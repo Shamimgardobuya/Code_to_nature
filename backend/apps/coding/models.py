@@ -100,3 +100,12 @@ class CodingSession(models.Model):
         self.credits_awarded = self.award_credits()
 
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        """String representation of the CodingSession"""
+        return (
+            f"CodingSession(user={self.user},"
+            f"duration={self.duration},"
+            f"source={self.source},"
+            f"created_at={self.created_at})"
+        )
