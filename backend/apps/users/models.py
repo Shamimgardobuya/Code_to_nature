@@ -23,6 +23,10 @@ class Profile(models.Model):
     current_streak = models.IntegerField(default=0)
     longest_streak = models.IntegerField(default=0)
     friends = models.ManyToManyField('Profile', blank=True)
+    
+    def __str__(self):
+        """Return Username"""
+        return self.user.username
 
     def streak_validation(self):
         """Validates Streaks"""
