@@ -13,6 +13,7 @@ def add_locked_credits(sender, instance, created, **kwargs):
         profile.locked_credits += instance.credits_awarded
         profile.save()
 
+
 @receiver(post_save, sender=Profile)
 def create_github_coding_session(sender, instance, created, **kwargs):
     """Signal to create coding session daily"""
