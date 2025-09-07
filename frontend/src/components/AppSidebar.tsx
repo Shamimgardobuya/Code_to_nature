@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import {
   Sidebar,
@@ -61,13 +61,10 @@ const navigationItems = [
 
 export function AppSidebar() {
   const { state } = useSidebar();
-  const location = useLocation();
   const { user, logout } = useAuth();
-  const currentPath = location.pathname;
-  
+ 
   const isCollapsed = state === "collapsed";
 
-  const isActive = (path: string) => currentPath === path;
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
       ? "bg-primary/20 text-primary font-medium border-r-2 border-primary" 
@@ -99,32 +96,6 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="px-2">
-        {/* User Info */}
-        {/* {!isCollapsed && (
-          <div className="p-4 bg-gradient-to-r from-primary/10 to-success/10 rounded-lg m-2 mb-4">
-            <div className="flex items-center gap-3">
-              <Avatar className="w-10 h-10">
-                <AvatarFallback className="bg-primary/20 text-primary font-semibold">
-                  {user.avatar}
-                </AvatarFallback>
-              </Avatar>
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold text-sm truncate">
-                  {user.firstName} {user.lastName}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {user.badge}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <Leaf className="w-3 h-3 text-primary" />
-                  <span className="text-xs font-medium text-primary">
-                    {user.ecoCredits} credits
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )} */}
 
         {/* Navigation */}
         <SidebarGroup>
