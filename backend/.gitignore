@@ -12,6 +12,7 @@ db.sqlite3
 
 # Environment
 .env
+.env.*
 venv/
 env/
 *.egg-info/
@@ -26,3 +27,62 @@ Thumbs.db
 
 # VS Code
 .vscode/
+
+# Redis
+dump.rdb
+
+# Celery
+celerybeat-schedule
+celerybeat-schedule.db
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Test output
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Build
+build/
+dist/
+*.manifest
+*.spec
+
+# Pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+
+# Pytest
+.cache/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Static files (Django collectstatic output)
+staticfiles/
+static/
+
+# Media files (user uploads)
+media/
+
+# IDEs
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Mac
+*.DS_Store
+
+# Windows
+*.Thumbs.db
+ehthumbs.db
+Desktop.ini
