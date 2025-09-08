@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+from datetime import timedelta
 
 import sys, os
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,12 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
-    'coding',
-    'activities',
-    'rewards',
-    'leaderboard',
-    'common'
+
+    'apps.rewards',
 ]
 
 MIDDLEWARE = [
