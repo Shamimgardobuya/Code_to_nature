@@ -11,6 +11,16 @@ pillow==11.3.0
 PyJWT==2.10.1
 python-dateutil==2.9.0.post0
 rest-framework-simplejwt==0.0.2
+certifi==2025.8.3
+charset-normalizer==3.4.3
+idna==3.10
+PyJWT==2.10.1
 six==1.17.0
 sqlparse==0.5.3
+tomli==2.2.1
 typing_extensions==4.15.0
+requests==2.32.5
+urllib3==2.5.0
+Pillow==11.3.0
+celery[redis]==5.2.1
+django-filter==25.1
