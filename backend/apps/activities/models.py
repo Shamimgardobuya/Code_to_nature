@@ -14,7 +14,10 @@ class Activity(models.Model):
         ('VERIFIED' , 'verified'),
         ('REJECTED', 'rejected')
     ]
-    status = models.CharField(choices=statuses, default='PENDING')
+    status = models.CharField(
+        choices=statuses,
+        default='PENDING',
+        max_length=12)
     verified_on = models.DateTimeField(null=True)
     location = models.CharField(max_length=70, null=True)
     activity_date = models.DateField(default=date.today)
