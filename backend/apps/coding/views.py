@@ -51,18 +51,17 @@ class CodingViewSet(viewsets.ModelViewSet):
                 created_at__date=today
             ).exists()
 
-            if not exists:
-                try:
-                    temp_session = CodingSession(user=profile, source="github")
-                    duration = temp_session.get_duration_from_github() or timedelta()
-                    CodingSession.objects.create(
-                        user=profile,
-                        source="github",
-                        duration=duration
-                    )
-                    created_count += 1
-                    logger.info(f"Created session for {profile.pk}")
-                except Exception as e:
-                    logger.error(f"Error for {profile.pk}: {e}")
+            try:
+                temp_session = CodingSession(user=profile, source="github")
+                duration = temp_session.get_duration_from_github() or timedelta()
+                CodingSession.objects.create(
+                    user=profile,
+                    source="github",
+                    duration=duration
+                )
+                created_count += 1
+                logger.info(f"Created session for {profile.pk}")
+            except Exception as e:
+                logger.error(f"Error for {profile.pk}: {e}")
 
         return Response({"status": "success", "created": created_count})
