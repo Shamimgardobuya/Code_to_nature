@@ -54,7 +54,7 @@ class CodingViewSet(viewsets.ModelViewSet):
             if not session:
                 try:
                     temp_session = CodingSession(user=profile, source="github")
-                    duration = temp_session.get_duration_from_github() or session.duration or timedelta()
+                    duration = temp_session.get_duration_from_github() or timedelta()
                     CodingSession.objects.create(
                         user=profile,
                         source="github",
