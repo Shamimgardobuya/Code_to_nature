@@ -1,9 +1,14 @@
 from apps.users.models import CustomUser
 from django.db import transaction
+import logging
+from datetime import timedelta
 
 
+logger = logging.getLogger(__name__)
 
-def unlock_credits(activity):
+def unlock_credits(activity_id):
+    from .models import Activity
+    activity = Activity.objects.get(id=activity_id)
     #guiding to points :     #1hr coding time = 10 points
     duration_in_hrs =(activity.duration / 60)
     user_profile =  activity.user.profile
@@ -18,7 +23,10 @@ def unlock_credits(activity):
                 user_profile.locked_credits -= points_to_unlock  
                 user_profile.eco_credits += points_to_unlock 
                 user_profile.save()
+                logger.info(f"Added eco-credits for user {user_profile} as {user_profile.eco_credits }")
+
     except Exception as e:
+        logger.error(f"Error occurred {str(e)}")
         return(str(e))
     
     return points_to_unlock
