@@ -73,7 +73,7 @@ class CodingSession(models.Model):
         end_time = todays_events_sorted[-1]["created_at"]
         duration = end_time - start_time
         if duration < timedelta(0):
-            return None
+            return timedelta()
         return duration
 
     @property
