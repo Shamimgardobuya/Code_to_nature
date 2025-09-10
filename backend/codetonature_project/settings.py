@@ -155,17 +155,4 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
-# Celery Configuration
-CELERY_BROKER_URL = os.getenv("REDIS_URL")
-CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
-CELERY_BEAT_SCHEDULE = {
-    'create-github-session-every-minute': {
-        'task': 'apps.coding.tasks.create_daily_github_coding_session',
-        'schedule': crontab(),  # every minute for test, will update to a 11:59PM
-        # later crontab(hour=23, minute=59)
-    },
-}
+GITHUB_TASK_SECRET = os.environ.get("GITHUB_TASK_SECRET")
