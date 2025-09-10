@@ -45,20 +45,17 @@ class CodingViewSet(viewsets.ModelViewSet):
         for profile in profiles:
             logger.info(f"Checking profile {profile.pk} ({profile.github_username})")
 
-            exists = CodingSession.objects.filter(
+            session, created = CodingSession.objects.get_or_create(
                 user=profile,
                 source="github",
-                created_at__date=today
-            ).exists()
+                created_at__date=today,
+                defaults={"duration": timedelta()}
+            )
 
             try:
-                temp_session = CodingSession(user=profile, source="github")
-                duration = temp_session.get_duration_from_github() or timedelta()
-                CodingSession.objects.create(
-                    user=profile,
-                    source="github",
-                    duration=duration
-                )
+                duration = session.get_duration_from_github() or session.duration or timedelta()
+                session.duration = duration
+                session.save()
                 created_count += 1
                 logger.info(f"Created session for {profile.pk}")
             except Exception as e:
