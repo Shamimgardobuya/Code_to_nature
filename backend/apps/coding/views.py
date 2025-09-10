@@ -1,5 +1,5 @@
 from datetime import timedelta
-from django.utils.timezone import now
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 import logging
 from django.conf import settings
@@ -38,7 +38,7 @@ class CodingViewSet(viewsets.ModelViewSet):
         if secret != settings.GITHUB_TASK_SECRET:
             return Response({"status": "forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
-        today = now().date()
+        today = timezone.localdate()
         profiles = Profile.objects.exclude(github_username="").exclude(github_username__isnull=True)
         created_count = 0
 
