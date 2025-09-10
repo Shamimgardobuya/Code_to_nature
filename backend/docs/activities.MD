@@ -16,9 +16,6 @@ POST request to f{base_url}/api/activities/
 content-type : application/json
 Payload:
    {
-     "success": true,
-    "data": {
-    "user": 1,
     "duration": 60,
     "verification_proof": .png,
     "status": null,
@@ -26,7 +23,7 @@ Payload:
     "activity_date": 2025-09-07,
     "description": "",
     "activity": "family_meetup"
-    }
+    
 }
 
 Response:

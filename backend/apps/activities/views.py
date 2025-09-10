@@ -17,6 +17,9 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
     serializer_class = ActivitiesSerializer
     permission_classes = [IsAuthenticated]
     
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
     def create(self, request, *args, **kwargs):
             response = super().create(request, *args, **kwargs)
             return Response(
