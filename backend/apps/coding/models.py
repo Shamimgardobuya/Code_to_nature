@@ -61,7 +61,7 @@ class CodingSession(models.Model):
         ]
 
         if not todays_events:
-            return None
+            return timedelta()
 
         # sort today's events by earliest created
         todays_events_sorted = sorted(
