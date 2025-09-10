@@ -27,7 +27,7 @@ class CodingSession(models.Model):
         username = self.user.github_username
         github_token = self.user.github_token
         if not username:
-            return None
+            return timedelta()
 
         url_request = f"https://api.github.com/users/{username}/events"
         headers = {
@@ -41,12 +41,12 @@ class CodingSession(models.Model):
             response = requests.get(url_request, headers=headers)
             response.raise_for_status()
         except requests.RequestException as e:
-            return None
+            return timedelta()
 
         try:
             events = response.json()
         except ValueError:
-            return None
+            return timedelta()
 
         # Parse created_at into datetime object
         for item in events:
@@ -87,9 +87,7 @@ class CodingSession(models.Model):
     def award_credits(self):
         """Credits are awarded based on coding duration"""
         if self.source == 'github':
-            self.duration = self.get_duration_from_github()
-        if self.duration is None:
-            return 0
+            self.duration = self.get_duration_from_github() or timedelta()
         total_minutes = self.duration.total_seconds() / 60
         interval_of_30_mins = total_minutes // 30
 
