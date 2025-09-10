@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime, date, timedelta
+from django.utils.timezone import now
 from django.db import models
 from apps.users.models import Profile
 
@@ -54,7 +55,7 @@ class CodingSession(models.Model):
                     item["created_at"].replace('Z', '+00:00')
                 )
 
-        today = datetime.now().date()
+        today = now().date()
         todays_events = [
             item for item in events
             if "created_at" in item and item["created_at"].date() == today
