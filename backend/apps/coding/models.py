@@ -3,6 +3,9 @@ from datetime import datetime, date, timedelta
 from django.utils.timezone import now
 from django.db import models
 from apps.users.models import Profile
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # Create your models here.
@@ -41,6 +44,7 @@ class CodingSession(models.Model):
             response = requests.get(url_request, headers=headers)
             response.raise_for_status()
         except requests.RequestException as e:
+            logger.warning("Github API fail")
             return timedelta()
 
         try:
@@ -51,14 +55,18 @@ class CodingSession(models.Model):
         # Parse created_at into datetime object
         for item in events:
             if "created_at" in item:
-                item["created_at"] = datetime.fromisoformat(
-                    item["created_at"].replace('Z', '+00:00')
-                )
+                try:
+                    item["created_at"] = datetime.fromisoformat(
+                        item["created_at"].replace('Z', '+00:00')
+                    )
+                except Exception as e:
+                    logger.warning(f"failed to parse Guthub events date for {username}: {e}")
 
         today = now().date()
         todays_events = [
             item for item in events
             if "created_at" in item and item["created_at"].date() == today
+            and item.get("type") == "PushEvent"
         ]
 
         if not todays_events:
