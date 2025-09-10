@@ -1,5 +1,5 @@
 from datetime import timedelta
-from django.utils import timezone
+from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend
 import logging
 from django.conf import settings
@@ -38,27 +38,32 @@ class CodingViewSet(viewsets.ModelViewSet):
         if secret != settings.GITHUB_TASK_SECRET:
             return Response({"status": "forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
-        today = timezone.localdate()
+        today = now().date()
         profiles = Profile.objects.exclude(github_username="").exclude(github_username__isnull=True)
         created_count = 0
 
         for profile in profiles:
             logger.info(f"Checking profile {profile.pk} ({profile.github_username})")
 
-            session, created = CodingSession.objects.get_or_create(
+            session = CodingSession.objects.filter(
                 user=profile,
                 source="github",
-                created_at__date=today,
-                defaults={"duration": timedelta()}
-            )
+                created_at__date=today
+            ).first()
 
-            try:
-                duration = session.get_duration_from_github() or session.duration or timedelta()
-                session.duration = duration
-                session.save()
-                created_count += 1
-                logger.info(f"Created session for {profile.pk}")
-            except Exception as e:
-                logger.error(f"Error for {profile.pk}: {e}")
-
+            if not session:
+                try:
+                    temp_session = CodingSession(user=profile, source="github")
+                    duration = temp_session.get_duration_from_github() or session.duration or timedelta()
+                    CodingSession.objects.create(
+                        user=profile,
+                        source="github",
+                        duration=duration
+                    )
+                    created_count += 1
+                    logger.info(f"Created session for {profile.pk}")
+                except Exception as e:
+                    logger.error(f"Error for {profile.pk}: {e}")
+            else:
+                logger.info(f"Session already exists for {profile.pk}")
         return Response({"status": "success", "created": created_count})
