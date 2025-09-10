@@ -26,7 +26,12 @@ class CodingViewSet(viewsets.ModelViewSet):
     filterset_fields = ['user']
 
     
-    @action(detail=False, methods=['post'], url_path='daily-github-task')
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='daily-github-task',
+        permission_classes = [permissions.AllowAny]
+    )
     def create_daily_github_coding_session(self, request):
         """Create coding session daily for all profiles with GitHub usernames."""
         secret = request.headers.get("X-Task-Key")
