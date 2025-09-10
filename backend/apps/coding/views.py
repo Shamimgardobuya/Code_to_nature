@@ -1,9 +1,19 @@
-from rest_framework import viewsets, permissions, filters
-from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from datetime import timedelta
+from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend
+import logging
+from django.conf import settings
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from rest_framework.response import Response
 from .serializers import CodingSessionSerializer
 from .models import CodingSession
 from apps.users.renderers import BooleanRenderer
+from apps.users.models import Profile
+
+
+logger = logging.getLogger(__name__)
 
 
 # Create your views here.
@@ -14,3 +24,40 @@ class CodingViewSet(viewsets.ModelViewSet):
     renderer_classes = [BooleanRenderer, JSONRenderer, BrowsableAPIRenderer]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['user']
+
+    
+    @action(detail=False, methods=['post'], url_path='daily-github-task')
+    def create_daily_github_coding_session(self, request):
+        """Create coding session daily for all profiles with GitHub usernames."""
+        secret = request.headers.get("X-Task-Key")
+        if secret != settings.GITHUB_TASK_SECRET:
+            return Response({"status": "forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
+        today = now().date()
+        profiles = Profile.objects.exclude(github_username="").exclude(github_username__isnull=True)
+        created_count = 0
+
+        for profile in profiles:
+            logger.info(f"Checking profile {profile.pk} ({profile.github_username})")
+
+            exists = CodingSession.objects.filter(
+                user=profile,
+                source="github",
+                created_at__date=today
+            ).exists()
+
+            if not exists:
+                try:
+                    temp_session = CodingSession(user=profile, source="github")
+                    duration = temp_session.get_duration_from_github() or timedelta()
+                    CodingSession.objects.create(
+                        user=profile,
+                        source="github",
+                        duration=duration
+                    )
+                    created_count += 1
+                    logger.info(f"Created session for {profile.pk}")
+                except Exception as e:
+                    logger.error(f"Error for {profile.pk}: {e}")
+
+        return Response({"status": "success", "created": created_count})
