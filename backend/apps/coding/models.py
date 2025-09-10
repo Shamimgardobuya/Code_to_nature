@@ -1,7 +1,11 @@
 import requests
 from datetime import datetime, date, timedelta
+from django.utils.timezone import now
 from django.db import models
 from apps.users.models import Profile
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # Create your models here.
@@ -26,7 +30,7 @@ class CodingSession(models.Model):
         username = self.user.github_username
         github_token = self.user.github_token
         if not username:
-            return None
+            return timedelta()
 
         url_request = f"https://api.github.com/users/{username}/events"
         headers = {
@@ -40,28 +44,33 @@ class CodingSession(models.Model):
             response = requests.get(url_request, headers=headers)
             response.raise_for_status()
         except requests.RequestException as e:
-            return None
+            logger.warning("Github API fail")
+            return timedelta()
 
         try:
             events = response.json()
         except ValueError:
-            return None
+            return timedelta()
 
         # Parse created_at into datetime object
         for item in events:
             if "created_at" in item:
-                item["created_at"] = datetime.fromisoformat(
-                    item["created_at"].replace('Z', '+00:00')
-                )
+                try:
+                    item["created_at"] = datetime.fromisoformat(
+                        item["created_at"].replace('Z', '+00:00')
+                    )
+                except Exception as e:
+                    logger.warning(f"failed to parse Guthub events date for {username}: {e}")
 
-        today = datetime.now().date()
+        today = now().date()
         todays_events = [
             item for item in events
             if "created_at" in item and item["created_at"].date() == today
+            and item.get("type") == "PushEvent"
         ]
 
         if not todays_events:
-            return None
+            return timedelta()
 
         # sort today's events by earliest created
         todays_events_sorted = sorted(
@@ -73,7 +82,7 @@ class CodingSession(models.Model):
         end_time = todays_events_sorted[-1]["created_at"]
         duration = end_time - start_time
         if duration < timedelta(0):
-            return None
+            return timedelta()
         return duration
 
     @property
@@ -86,9 +95,7 @@ class CodingSession(models.Model):
     def award_credits(self):
         """Credits are awarded based on coding duration"""
         if self.source == 'github':
-            self.duration = self.get_duration_from_github()
-        if self.duration is None:
-            return 0
+            self.duration = self.get_duration_from_github() or timedelta()
         total_minutes = self.duration.total_seconds() / 60
         interval_of_30_mins = total_minutes // 30
 

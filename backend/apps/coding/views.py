@@ -45,13 +45,13 @@ class CodingViewSet(viewsets.ModelViewSet):
         for profile in profiles:
             logger.info(f"Checking profile {profile.pk} ({profile.github_username})")
 
-            exists = CodingSession.objects.filter(
+            session = CodingSession.objects.filter(
                 user=profile,
                 source="github",
                 created_at__date=today
-            ).exists()
+            ).first()
 
-            if not exists:
+            if not session:
                 try:
                     temp_session = CodingSession(user=profile, source="github")
                     duration = temp_session.get_duration_from_github() or timedelta()
@@ -64,5 +64,6 @@ class CodingViewSet(viewsets.ModelViewSet):
                     logger.info(f"Created session for {profile.pk}")
                 except Exception as e:
                     logger.error(f"Error for {profile.pk}: {e}")
-
+            else:
+                logger.info(f"Session already exists for {profile.pk}")
         return Response({"status": "success", "created": created_count})
