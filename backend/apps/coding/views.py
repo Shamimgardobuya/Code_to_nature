@@ -30,7 +30,7 @@ class CodingViewSet(viewsets.ModelViewSet):
         detail=False,
         methods=['post'],
         url_path='daily-github-task',
-        permission_classess = [permissions.AllowAny]
+        permission_classes = [permissions.AllowAny]
     )
     def create_daily_github_coding_session(self, request):
         """Create coding session daily for all profiles with GitHub usernames."""
