@@ -45,6 +45,7 @@ User Profile is created when user is first created
 Make sure that access token is set in headers
 GET http://localhost:8000/api/profiles/ (admin route only)
 GET http://localhost:8000/api/profiles/{id}/
+GET http://localhost:8000/api/profiles/me/
 
 response
 {
@@ -65,6 +66,7 @@ response
 ***Edit Profile***
 All fields
 PUT http://localhost:8000/api/profiles/{id}/
+PUT http://localhost:8000/api/profiles/me/
 body
 {
   "profile_pic": null,
@@ -95,6 +97,7 @@ response
 
 edit select fields
 PATCH http://localhost:8000/api/profiles/{id}/
+PATCH http://localhost:8000/api/profiles/me/
 body
 {
   "github_username": "updatedgithub"

@@ -17,7 +17,7 @@ class Profile(models.Model):
     profile_pic = models.ImageField(
         upload_to="profiles/", blank=True, null=True
     )
-    github_username = models.CharField(max_length=39)
+    github_username = models.CharField(max_length=39, blank=True, null=True)
     github_token = models.UUIDField(blank=True, null=True)
     eco_credits = models.IntegerField(default=0)
     locked_credits = models.IntegerField(default=0)
