@@ -37,7 +37,7 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
                 activity.verified_on = datetime.now()
                 activity.save()
                 
-                unlock_credits.delay(activity.id) #performs unlocking the credit
+                unlock_credits(activity.id) #performs unlocking the credit
                 serializer = self.get_serializer(activity)
 
                 return Response(

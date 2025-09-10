@@ -1,16 +1,11 @@
 from apps.users.models import CustomUser
 from django.db import transaction
-
-from celery import shared_task
 import logging
 from datetime import timedelta
 
 
 logger = logging.getLogger(__name__)
 
-
-
-@shared_task()
 def unlock_credits(activity_id):
     from .models import Activity
     activity = Activity.objects.get(id=activity_id)
