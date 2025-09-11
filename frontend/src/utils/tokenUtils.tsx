@@ -1,12 +1,12 @@
 // utils/tokenUtils.ts
-import ApiService from '../services/api';
+import ApiService from "../services/api";
 
 export const setupTokenInterceptor = () => {
   // Add request interceptor to include auth token in requests
   ApiService.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem("authToken");
-      if (token) {
+      if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
@@ -25,7 +25,7 @@ export const setupTokenInterceptor = () => {
       if (error.response?.status === 401) {
         // Token is invalid, clear it
         localStorage.removeItem("authToken");
-        window.location.href = '/login';
+        window.location.href = "/login";
       }
       return Promise.reject(error);
     }

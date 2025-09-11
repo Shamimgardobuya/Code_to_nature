@@ -1,140 +1,161 @@
 // services/api.ts
-import axios from 'axios';
+import axios from "axios";
 
-// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080/api';
-// const API_BASE_URL = 'http://127.0.0.1:8000/api';
-const API_BASE_URL = 'https://code-to-nature.onrender.com/api';
+// ---------- Config ----------
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL 
 
 const ApiService = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
-// Auth methods
-export const login = async (email: string, password: string) => {
-  const response = await ApiService.post('/token/', { email, password });
-  const { access } = response.data;
-  localStorage.setItem("authToken", access);
-  window.location.href = '/login';
-};
+// ---------- Interceptors ----------
 
-export const register = async (userData: {
-  email: string;
-  password: string;
-}) => {
-  const response = await ApiService.post('/users/', userData);
-  // Extract user data directly from response.data (which matches the email/username structure)
-  const { email, username } = response.data.data;
-  const user = { email, username };
-  return { user };
-};
-
-export const getProfile = async () => {
-  const response = await ApiService.get('/profiles/me/');
-  return response.data;
-};
-
-export const updateProfile = async (profileData: any) => {
-  const response = await ApiService.patch('/profiles/me/', profileData);
-  return response.data;
-};
-
-// Profile image upload function
-export const uploadProfileImage = async (imageFile: File): Promise<string> => {
-  const formData = new FormData();
-  formData.append('profile_pic', imageFile);
-
-  const response = await ApiService.post('/profiles/me/upload-image/', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-
-  return response.data.profile_pic_url; // Assuming the API returns the image URL
-};
-
-// Combined profile update with image upload
-export const updateProfileWithImage = async (profileData: any, imageFile?: File) => {
-  let updatedProfile;
-  
-  // First update the profile data
-  if (Object.keys(profileData).length > 0) {
-    updatedProfile = await updateProfile(profileData);
-  }
-  
-  // Then upload image if provided
-  if (imageFile) {
-    const imageUrl = await uploadProfileImage(imageFile);
-    // Update the profile with the new image URL
-    updatedProfile = await updateProfile({ profile_pic: imageUrl });
-  }
-  
-  return updatedProfile;
-};
-
-// Add a function to set the auth token for requests
+// Attach token to all requests
 ApiService.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
+    const token = localStorage.getItem("authToken");
+    if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Add a response interceptor to handle 401 Unauthorized responses
+// Handle 401 Unauthorized globally
 ApiService.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // If we get a 401, remove the token and redirect to login
-      localStorage.removeItem('authToken');
-      window.location.href = '/login';
+      localStorage.removeItem("authToken");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
 );
 
-// We might also want to export a function to log out
-export const logout = () => {
-  localStorage.removeItem('authToken');
+// ---------- Types ----------
+
+export interface LoginResponse {
+  access: string;
+}
+
+export interface RegisterResponse {
+  data: {
+    email: string;
+    username: string;
+  };
+}
+
+export interface Profile {
+  email: string;
+  username: string;
+  profile_pic?: string;
+  // add more profile fields if needed
+}
+
+// export interface Profile {
+//   success: boolean;
+//   data: Profile;
+// }
+
+// ---------- Auth Helpers ----------
+
+export const login = async (email: string, password: string): Promise<void> => {
+  const response = await ApiService.post<LoginResponse>("/token/", { email, password });
+  const { access } = response.data;
+  localStorage.setItem("authToken", access);
+  window.location.href = "/dashboard"; // redirect after login
 };
 
-// Generic API methods
-export const get = (url: string, params = {}) => {
-  return ApiService.get(url, { params });
+export const register = async (userData: { email: string; password: string }) => {
+  const response = await ApiService.post<RegisterResponse>("/users/", userData);
+  const { email, username } = response.data.data;
+  return { user: { email, username } };
 };
 
-export const post = (url: string, data: any) => {
-  return ApiService.post(url, data);
+export const logout = (): void => {
+  localStorage.removeItem("authToken");
+  window.location.href = "/login";
 };
 
-export const put = (url: string, data: any) => {
-  return ApiService.put(url, data);
+export const isAuthenticated = (): boolean => !!localStorage.getItem("authToken");
+export const getToken = (): string | null => localStorage.getItem("authToken");
+
+// ---------- Profile Helpers ----------
+
+export const getProfile = async (): Promise<Profile> => {
+  const response = await ApiService.get<Profile>("/profiles/me/");
+  return response.data;
 };
 
-export const patch = (url: string, data: any) => {
-  return ApiService.patch(url, data);
+export const updateProfile = async (profileData: Partial<Profile>): Promise<Profile> => {
+  const response = await ApiService.patch<Profile>("/profiles/me/", profileData);
+  return response.data;
 };
 
-export const del = (url: string) => {
-  return ApiService.delete(url);
+export const uploadProfileImage = async (imageFile: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append("profile_pic", imageFile);
+
+  const response = await ApiService.post<{ profile_pic_url: string }>(
+    "/profiles/me/upload-image/",
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } }
+  );
+
+  return response.data.profile_pic_url;
 };
 
-// Check if user is authenticated
-export const isAuthenticated = () => {
-  return !!localStorage.getItem('authToken');
+// export const updateProfileWithImage = async (
+//   profileData: Partial<Profile>,
+//   imageFile?: File
+// ): Promise<Profile> => {
+//   let updatedProfile: Profile = { email: "", username: "" }; // default, will overwrite
+
+//   if (Object.keys(profileData).length > 0) {
+//     updatedProfile = await updateProfile(profileData);
+//   }
+
+//   if (imageFile) {
+//     const imageUrl = await uploadProfileImage(imageFile);
+//     updatedProfile = await updateProfile({ profile_pic: imageUrl });
+//   }
+
+//   return updatedProfile;
+// };
+
+// ---------- Generic API Methods ----------
+
+export const get = async <T = any>(url: string, params = {}): Promise<T> => {
+  const response = await ApiService.get<T>(url, { params });
+  return response.data;
 };
 
-// Get stored token
-export const getToken = () => {
-  return localStorage.getItem('authToken');
+export const post = async <T = any>(url: string, data: any): Promise<T> => {
+  const response = await ApiService.post<T>(url, data);
+  return response.data;
 };
+
+export const put = async <T = any>(url: string, data: any): Promise<T> => {
+  const response = await ApiService.put<T>(url, data);
+  return response.data;
+};
+
+export const patch = async <T = any>(url: string, data: any): Promise<T> => {
+  const response = await ApiService.patch<T>(url, data);
+  return response.data;
+};
+
+export const del = async <T = any>(url: string): Promise<T> => {
+  const response = await ApiService.delete<T>(url);
+  return response.data;
+};
+
+// ---------- Export Default ----------
 
 export default ApiService;

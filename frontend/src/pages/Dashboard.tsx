@@ -21,7 +21,6 @@ import heroImage from "@/assets/hero-nature-coding.jpg";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  console.log("User data:", user);
 
   if (!user) return null;
   return (

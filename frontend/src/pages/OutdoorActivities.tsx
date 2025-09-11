@@ -68,11 +68,14 @@ const OutdoorActivities = () => {
     fetchActivities();
   }, []);
 
+  const API_BASE_URL =
+  import.meta.env.VITE_API_URL 
+
   const fetchActivities = async () => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await fetch(
-        `https://code-to-nature.onrender.com/api/activities/`,
+        `${API_BASE_URL}/activities/`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -128,7 +131,7 @@ const OutdoorActivities = () => {
       }
 
       const response = await fetch(
-        `https://code-to-nature.onrender.com/api/activities/`,
+        `${API_BASE_URL}/activities/`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },

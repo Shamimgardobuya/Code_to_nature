@@ -32,9 +32,9 @@ export interface RedeemResponse {
 // -----------------------------
 // Axios instance
 // -----------------------------
-const API_BASE = import.meta.env.VITE_API_URL || "https://code-to-nature.onrender.com/api";
+const API_BASE =
+  import.meta.env.VITE_API_URL
 
-// axios instance with auth header support
 const api = axios.create({
   baseURL: API_BASE,
   headers: {
@@ -42,10 +42,10 @@ const api = axios.create({
   },
 });
 
-// attach token from localStorage (sync with AuthProvider)
+// attach token from localStorage
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("authToken");
-  if (token) {
+  if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -55,22 +55,29 @@ api.interceptors.request.use((config) => {
 // Reward Service
 // -----------------------------
 export const rewardService = {
+  // Manually update token if needed
   updateToken(token: string) {
     localStorage.setItem("authToken", token);
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
   },
 
+  // Get all rewards
   async getAllRewards(): Promise<Reward[]> {
-    const res = await api.get("/rewards/");
+    const res = await api.get<Reward[]>("/rewards/");
     return res.data;
   },
 
+  // Get user redemptions
   async getRedemptions(): Promise<Redemption[]> {
-    const res = await api.get("/rewards/redemptions/");
+    const res = await api.get<Redemption[]>("/rewards/redemptions/");
     return res.data;
   },
 
+  // Redeem a reward
   async redeemReward(rewardId: number): Promise<RedeemResponse> {
-    return api.post("/rewards/redeem/", { reward_id: rewardId });
+    const res = await api.post<RedeemResponse>("/rewards/redeem/", {
+      reward_id: rewardId,
+    });
+    return res.data;
   },
 };

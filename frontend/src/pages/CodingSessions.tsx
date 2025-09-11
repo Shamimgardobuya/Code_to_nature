@@ -50,6 +50,9 @@ const CodingSessions = () => {
     hours: "",
   });
   const { toast } = useToast();
+
+  const API_BASE_URL =
+  import.meta.env.VITE_API_URL 
  
 
   // Fetch sessions from backend
@@ -60,7 +63,7 @@ const CodingSessions = () => {
     try {
       setIsLoadingSessions(true);
       const response = await fetch(
-        `https://code-to-nature.onrender.com/api/codingsessions/?user=${user.user}`,
+        `${API_BASE_URL}/codingsessions/?user=${user.user}`,
         {
           method: "GET",
           headers: {
@@ -121,7 +124,7 @@ const CodingSessions = () => {
       };
 
       const response = await fetch(
-        "https://code-to-nature.onrender.com/api/codingsessions/",
+        `${API_BASE_URL}/codingsessions/`,
         {
           method: "POST",
           headers: {

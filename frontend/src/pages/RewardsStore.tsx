@@ -30,14 +30,13 @@ import {
   Loader2,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import type {Profile} from "../contexts/AuthContext";
 import { useToast } from "../hooks/use-toast";
 import { rewardService } from "../services/rewards";
 import type { Reward, Redemption } from "../services/rewards";
-// import type { getProfile } from "../services/AuthContext";
-import { getProfile } from "../services/api"; 
-// import { Profile } from "../types";
+import { getProfile } from "../services/api";
 
-// Icon mapping from API strings to React components
+// Icon mapping
 const iconMap: { [key: string]: React.JSX.Element } = {
   tree: <Trees className="w-6 h-6" />,
   coffee: <Coffee className="w-6 h-6" />,
@@ -72,10 +71,21 @@ export default function RewardsStore() {
     fetchRedemptions();
   }, []);
 
+  const mapToProfile = (data: any): Profile => ({
+    user: data.id,
+    profile_pic: data.profile_pic ?? null,
+    github_username: data.github_username ?? null,
+    github_token: data.github_token ?? null,
+    eco_credits: data.eco_credits ?? 0,
+    locked_credits: data.locked_credits ?? 0,
+    current_streak: data.current_streak ?? 0,
+    longest_streak: data.longest_streak ?? 0,
+  });
+
   const fetchProfile = async () => {
     try {
-      const profile = await getProfile();
-      setUser(profile.data);
+      const profileData = await getProfile();
+      setUser(mapToProfile(profileData));
     } catch (error: any) {
       console.error("Error fetching profile:", error);
       toast({
@@ -96,8 +106,7 @@ export default function RewardsStore() {
       console.error("Error fetching rewards:", error);
       toast({
         title: "Error",
-        description:
-          error.message || "Failed to load rewards. Please try again later.",
+        description: error.message || "Failed to load rewards.",
         variant: "destructive",
       });
     } finally {
@@ -127,22 +136,17 @@ export default function RewardsStore() {
     setIsRedeeming(reward.id);
 
     try {
-      // Redeem reward via API
       const data = await rewardService.redeemReward(parseInt(reward.id));
-
-      // Update user credits
       setUser({
         ...user,
-        eco_credits: data.remaining_credits,
+        eco_credits: data.remaining_credits ?? user.eco_credits,
       });
 
-      // Add to redemption history
       const newRedemption: Redemption = data.redemption;
       setRedemptions([newRedemption, ...redemptions]);
 
-      // Auto-reload rewards and redemptions (replace arrays to trigger re-render)
       window.location.href = "/rewards";
-      // Show success toast
+
       toast({
         title: "Reward redeemed!",
         description:
@@ -161,15 +165,12 @@ export default function RewardsStore() {
     }
   };
 
-  const environmentalRewards = rewards.filter(
-    (r) => r.category_display === "Environmental"
-  );
-  const merchandiseRewards = rewards.filter(
-    (r) => r.category_display === "Merchandise"
-  );
-  const digitalRewards = rewards.filter(
-    (r) => r.category_display === "Digital"
-  );
+  if (!user) return <div>Loading user data...</div>;
+
+  // Filter rewards by category
+  const environmentalRewards = rewards.filter((r) => r.category_display === "Environmental");
+  const merchandiseRewards = rewards.filter((r) => r.category_display === "Merchandise");
+  const digitalRewards = rewards.filter((r) => r.category_display === "Digital");
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -185,89 +186,38 @@ export default function RewardsStore() {
   };
 
   const RewardCard = ({ reward }: { reward: Reward }) => {
-    const canAfford =
-      user && user.eco_credits >= reward.cost && reward.available;
+    const canAfford = user && user.eco_credits >= reward.cost && reward.available;
     const isCurrentlyRedeeming = isRedeeming === reward.id;
     const IconComponent = iconMap[reward.icon] || iconMap.default;
 
     return (
-      <Card
-        className={`border-2 transition-all ${
-          canAfford
-            ? "border-green-200 hover:border-green-300"
-            : "border-gray-200 opacity-80"
-        }`}
-      >
+      <Card className={`border-2 transition-all ${canAfford ? "border-green-200 hover:border-green-300" : "border-gray-200 opacity-80"}`}>
         <CardHeader>
           <div className="flex justify-between items-start mb-2">
-            <div className="p-2 rounded-full bg-green-50 text-green-700">
-              {IconComponent}
-            </div>
+            <div className="p-2 rounded-full bg-green-50 text-green-700">{IconComponent}</div>
             <div className="flex flex-col items-end gap-1">
-              <Badge
-                className={`${getCategoryColor(
-                  reward.category_display
-                )} text-xs px-2 py-1`}
-              >
+              <Badge className={`${getCategoryColor(reward.category_display)} text-xs px-2 py-1`}>
                 {reward.category_display}
               </Badge>
-              {reward.popular && (
-                <Badge className="bg-amber-100 text-amber-800 text-xs px-2 py-1">
-                  Popular
-                </Badge>
-              )}
+              {reward.popular && <Badge className="bg-amber-100 text-amber-800 text-xs px-2 py-1">Popular</Badge>}
             </div>
           </div>
-          <div>
-            <CardTitle className="text-lg text-green-800 leading-tight">
-              {reward.name}
-            </CardTitle>
-            <CardDescription className="mt-2 text-sm leading-relaxed">
-              {reward.description}
-            </CardDescription>
-          </div>
+          <CardTitle className="text-lg text-green-800 leading-tight">{reward.name}</CardTitle>
+          <CardDescription className="mt-2 text-sm leading-relaxed">{reward.description}</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-            <Badge
-              variant={canAfford ? "default" : "secondary"}
-              className={`${
-                canAfford ? "bg-green-100 text-green-800" : ""
-              } text-sm px-3 py-1 w-fit`}
-            >
+            <Badge variant={canAfford ? "default" : "secondary"} className={`${canAfford ? "bg-green-100 text-green-800" : ""} text-sm px-3 py-1 w-fit`}>
               {reward.cost} credits
             </Badge>
-            <Button
-              onClick={() => handleRedeem(reward)}
-              disabled={!canAfford || isCurrentlyRedeeming}
-              className={`${
-                canAfford ? "bg-green-600 hover:bg-green-700" : ""
-              } w-full sm:w-auto text-sm px-4 py-2`}
-              variant={canAfford ? "default" : "secondary"}
-              size="sm"
-            >
-              {isCurrentlyRedeeming ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : !reward.available ? (
-                "Out of Stock"
-              ) : canAfford ? (
-                "Redeem Now"
-              ) : (
-                "Insufficient Credits"
-              )}
+            <Button onClick={() => handleRedeem(reward)} disabled={!canAfford || isCurrentlyRedeeming} className={`${canAfford ? "bg-green-600 hover:bg-green-700" : ""} w-full sm:w-auto text-sm px-4 py-2`} variant={canAfford ? "default" : "secondary"} size="sm">
+              {isCurrentlyRedeeming ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processing...</> : !reward.available ? "Out of Stock" : canAfford ? "Redeem Now" : "Insufficient Credits"}
             </Button>
           </div>
         </CardContent>
       </Card>
     );
   };
-
-  if (!user) {
-    return <div>Loading user data...</div>;
-  }
 
   return (
     <div className="container mx-auto px-4 py-8">
