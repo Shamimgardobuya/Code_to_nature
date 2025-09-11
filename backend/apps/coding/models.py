@@ -66,7 +66,7 @@ class CodingSession(models.Model):
         todays_events = [
             item for item in events
             if "created_at" in item and item["created_at"].date() == today
-            and item.get("type") == "PushEvent"
+            # and item.get("type") == "PushEvent"
         ]
 
         if not todays_events:
