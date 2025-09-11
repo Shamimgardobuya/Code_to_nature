@@ -1,6 +1,6 @@
 import requests
-from datetime import datetime, date, timedelta
-from django.utils.timezone import now
+from datetime import datetime, timedelta
+from django.utils.timezone import now, utc
 from django.db import models
 from apps.users.models import Profile
 import logging
@@ -62,7 +62,9 @@ class CodingSession(models.Model):
                 except Exception as e:
                     logger.warning(f"failed to parse Guthub events date for {username}: {e}")
 
-        today = now().date()
+        today = now().astimezone(utc).date()
+        logger.info(f"Fetched {len(events)} events for {username}")
+        
         todays_events = [
             item for item in events
             if "created_at" in item and item["created_at"].date() == today
