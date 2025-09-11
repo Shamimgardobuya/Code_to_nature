@@ -35,5 +35,5 @@ COPY --chown=appuser:appuser . .
 
 USER appuser
 
-# Run celery worker
-CMD ["celery", "-A", "codetonature_project", "worker", "-B", "-l", "info"]
+# removed celery
+CMD ["gunicorn", "codetonature_project.wsgi:application", "--bind", "0.0.0.0:${PORT}"]
