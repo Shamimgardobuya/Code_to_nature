@@ -3,6 +3,7 @@ from datetime import timedelta
 import os
 import dj_database_url
 from dotenv import load_dotenv
+import logging
 
 load_dotenv()
 
@@ -155,3 +156,38 @@ SIMPLE_JWT = {
 }
 
 GITHUB_TASK_SECRET = os.environ.get("GITHUB_TASK_SECRET")
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+    },
+}
+

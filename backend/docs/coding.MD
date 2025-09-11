@@ -62,7 +62,7 @@ Response
 
 ***Get coding sessions***
 For specific user
-GET http://localhost:8000/api/codingsessions/?user=?{user_id}
+GET http://localhost:8000/api/codingsessions?user={user_id}
 For all users
 GET http://localhost:8000/api/codingsessions/
 

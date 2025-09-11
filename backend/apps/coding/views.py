@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timezone
 from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend
 import logging
@@ -38,7 +38,9 @@ class CodingViewSet(viewsets.ModelViewSet):
         if secret != settings.GITHUB_TASK_SECRET:
             return Response({"status": "forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
-        today = now().date()
+        today = now().astimezone(timezone.utc).date()
+        start_of_day = datetime.combine(today, datetime.min.time()).replace(tzinfo=timezone.utc)
+        end_of_day = datetime.combine(today, datetime.max.time()).replace(tzinfo=timezone.utc)
         profiles = Profile.objects.exclude(github_username="").exclude(github_username__isnull=True)
         created_count = 0
 
@@ -48,22 +50,24 @@ class CodingViewSet(viewsets.ModelViewSet):
             session = CodingSession.objects.filter(
                 user=profile,
                 source="github",
-                created_at__date=today
+                created_at__gte=start_of_day,
+                created_at__lte=end_of_day
             ).first()
 
-            if not session:
-                try:
-                    temp_session = CodingSession(user=profile, source="github")
-                    duration = temp_session.get_duration_from_github() or timedelta()
-                    CodingSession.objects.create(
-                        user=profile,
-                        source="github",
-                        duration=duration
-                    )
-                    created_count += 1
-                    logger.info(f"Created session for {profile.pk}")
-                except Exception as e:
-                    logger.error(f"Error for {profile.pk}: {e}")
-            else:
+            if session:
                 logger.info(f"Session already exists for {profile.pk}")
+                continue
+
+            try:
+                duration = CodingSession(user=profile, source="github").get_duration_from_github()
+                session = CodingSession(user=profile, source="github", duration=duration)
+                session.save()
+                created_count += 1
+                logger.info(
+                    f"Created session for {profile.pk} with duration {session.duration} "
+                    f"and credits {session.credits_awarded}"
+                )
+            except Exception as e:
+                logger.error(f"Error creating session for {profile.pk}: {e}")
+
         return Response({"status": "success", "created": created_count})
