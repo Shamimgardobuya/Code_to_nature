@@ -128,3 +128,4 @@ class CodingSession(models.Model):
             f"source={self.source},"
             f"created_at={self.created_at})"
         )
+

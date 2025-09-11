@@ -59,7 +59,8 @@ class CodingViewSet(viewsets.ModelViewSet):
                 continue
 
             try:
-                session = CodingSession(user=profile, source="github")
+                duration = CodingSession(user=profile, source="github").get_duration_from_github()
+                session = CodingSession(user=profile, source="github", duration=duration)
                 session.save()
                 created_count += 1
                 logger.info(
