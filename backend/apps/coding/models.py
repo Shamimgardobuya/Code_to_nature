@@ -66,7 +66,7 @@ class CodingSession(models.Model):
         for item in events:
             if item.get("type") in ALLOWED_EVENT_TYPES:
                 try:
-                    ts = datetime.fromisoformat(item["created_at"].replace("Z", "+00:00"))
+                    ts = datetime.fromisoformat(item["created_at"].replace("Z", "+00:00")).astimezone(timezone.utc)
                     valid_events.append(ts)
                 except Exception as e:
                     logger.warning(f"failed to parse Github events date for {username}: {e}")
@@ -94,6 +94,7 @@ class CodingSession(models.Model):
             return timedelta(minutes=30)
         
         logger.info(f"{username}: {len(todays_events)} events today, duration={duration}")
+        print(duration)
         return duration
 
     @property
