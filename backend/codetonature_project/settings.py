@@ -159,22 +159,34 @@ GITHUB_TASK_SECRET = os.environ.get("GITHUB_TASK_SECRET")
 
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+        },
     },
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': True,
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
         },
     },
 }
