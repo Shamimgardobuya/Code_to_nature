@@ -1,6 +1,5 @@
 from pathlib import Path
 from datetime import timedelta
-from celery.schedules import crontab
 import os
 import dj_database_url
 from dotenv import load_dotenv
