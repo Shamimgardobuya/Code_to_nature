@@ -39,7 +39,8 @@ def unlock_credits_signal(sender, instance, created, **kwargs):
                 locked_credits = user_profile.locked_credits
 
                 # duration in hours
-                duration_in_hrs = activity.duration
+                duration = activity.duration
+                duration_in_hrs = duration.hour + duration.minute / 60 + duration.second / 3600
 
                 # get multiplier (default 10 if activity not listed)
                 multiplier = ACTIVITY_POINTS.get(activity.activity.lower(), 2)

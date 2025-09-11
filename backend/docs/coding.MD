@@ -4,6 +4,7 @@
 ***Register coding session**
 NB: Ensure User is logged in and access token is set
 POST http://localhost:8000/api/codingsessions/
+POST https://localhost:8000/api/codingsessions/?user={user_id}
 Body
 {
   "user": {id}, # replace with actual user id
