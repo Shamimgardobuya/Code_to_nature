@@ -25,7 +25,7 @@ class CustomerUserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     """Profile Serializer"""
-    user = CustomerUserSerializer(read_only=True)
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
     class Meta:
         model = Profile
         fields = [
