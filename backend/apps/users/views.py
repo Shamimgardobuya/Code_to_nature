@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from .serializers import CustomerUserSerializer, ProfileSerializer
 from .models import CustomUser, Profile
 from .renderers import BooleanRenderer
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 
 # Create your views here.
