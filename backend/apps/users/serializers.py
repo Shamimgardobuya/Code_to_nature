@@ -6,7 +6,7 @@ class CustomerUserSerializer(serializers.ModelSerializer):
     """Customer User serializer"""
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'username']
+        fields = ['id', 'email', 'password', 'username']
         extra_kwargs = {
             "password": {"write_only": True},
             "username": {"required": False},
@@ -25,9 +25,12 @@ class CustomerUserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     """Profile Serializer"""
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
     class Meta:
         model = Profile
         fields = [
+            'id',
+            'user_id',
             'user',
             'profile_pic',
             'github_username',
