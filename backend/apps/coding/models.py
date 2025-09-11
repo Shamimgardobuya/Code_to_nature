@@ -69,14 +69,19 @@ class CodingSession(models.Model):
                     ts = datetime.fromisoformat(item["created_at"].replace("Z", "+00:00"))
                     valid_events.append(ts)
                 except Exception as e:
-                    logger.warning(f"failed to parse Guthub events date for {username}: {e}")
+                    logger.warning(f"failed to parse Github events date for {username}: {e}")
 
         if not valid_events:
+            logger.info(f"No valid events for {username}")
             return timedelta(minutes=0)
         today_utc = now().astimezone(timezone.utc).date()
+        logger.info(f"Event datetimes: {[t.isoformat() for t in valid_events]}")
+        logger.info(f"Today (UTC): {today_utc}")
         todays_events = [t for t in valid_events if t.date() == today_utc]
+        logger.info(f"Todays events: {[t.isoformat() for t in todays_events]}")
 
         if not todays_events:
+            logger.info(f"No events for today for {username}")
             return timedelta(minutes=0)
 
         # Compute duration
