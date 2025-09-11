@@ -64,7 +64,7 @@ class CodingSession(models.Model):
         # Parse created_at into datetime object
         valid_events = []
         for item in events:
-            if "created_at" in item:
+            if item.get("type") in ALLOWED_EVENT_TYPES:
                 try:
                     ts = datetime.fromisoformat(item["created_at"].replace("Z", "+00:00"))
                     valid_events.append(ts)
