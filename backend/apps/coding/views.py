@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import datetime, timezone
 from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend
 import logging
@@ -39,6 +39,8 @@ class CodingViewSet(viewsets.ModelViewSet):
             return Response({"status": "forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
         today = now().astimezone(timezone.utc).date()
+        start_of_day = datetime.combine(today, datetime.min.time()).replace(tzinfo=timezone.utc)
+        end_of_day = datetime.combine(today, datetime.max.time()).replace(tzinfo=timezone.utc)
         profiles = Profile.objects.exclude(github_username="").exclude(github_username__isnull=True)
         created_count = 0
 
@@ -48,7 +50,8 @@ class CodingViewSet(viewsets.ModelViewSet):
             session = CodingSession.objects.filter(
                 user=profile,
                 source="github",
-                created_at__date=today
+                created_at__gte=start_of_day,
+                created_at__lte=end_of_day
             ).first()
 
             if session:
