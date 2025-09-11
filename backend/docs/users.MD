@@ -118,3 +118,21 @@ response
     "friends": []
   }
 }
+
+***Get authenicated user profile***
+Get http://127.0.0.1:8000/api/profiles/me
+
+{
+  "success": true,
+  "data": {
+    "user": 3,
+    "profile_pic": null,
+    "github_username": "Eco-Coder254",
+    "github_token": null,
+    "eco_credits": 0,
+    "locked_credits": 0,
+    "current_streak": 0,
+    "longest_streak": 0,
+    "friends": []
+  }
+}
