@@ -32,7 +32,7 @@ class Activity(models.Model):
         ('gardening', 'gardening'),
         ('other', 'other')
     ]
-    activity = models.CharField(max_length=12, choices=activities, null=False)
+    activity = models.CharField(max_length=25, choices=activities, null=False)
 
     
     class Meta:
