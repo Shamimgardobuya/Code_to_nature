@@ -1,30 +1,36 @@
 import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import EcoCard from "../components/EcoCard";
 import { useAuth } from "../contexts/AuthContext";
-import { 
-  Leaf, 
-  Code, 
-  Trophy, 
+import {
+  Leaf,
+  Code,
+  // Trophy,
   Clock,
-  TrendingUp,
+  // TrendingUp,
   MapPin,
-  Plus
+  Plus,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-nature-coding.jpg";
 
 const Dashboard = () => {
   const { user } = useAuth();
+  console.log("User data:", user);
 
   if (!user) return null;
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative h-64 overflow-hidden">
-        <img 
-          src={heroImage} 
-          alt="Coding in nature" 
+        <img
+          src={heroImage}
+          alt="Coding in nature"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-success/60" />
@@ -32,10 +38,11 @@ const Dashboard = () => {
           <div className="container mx-auto px-4">
             <div className="text-white max-w-2xl">
               <h1 className="text-4xl font-bold mb-2">
-                Welcome back, {user.firstName}!
+                Welcome back, {user.github_username}!
               </h1>
               <p className="text-lg text-white/90">
-                Continue your eco-coding journey and make a positive environmental impact.
+                Continue your eco-coding journey and make a positive
+                environmental impact.
               </p>
             </div>
           </div>
@@ -47,19 +54,19 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <EcoCard
             title="Total Eco-Credits"
-            value={user.ecoCredits}
+            value={user.eco_credits}
             subtitle="+23 this week"
             icon={<Leaf className="w-5 h-5" />}
             trend="up"
           />
           <EcoCard
             title="Locked Credits"
-            value={user.lockedCredits}
+            value={user.locked_credits}
             subtitle="Awaiting verification"
             icon={<Clock className="w-5 h-5" />}
             trend="neutral"
           />
-          <EcoCard
+          {/* <EcoCard
             title="Coding Hours"
             value={`${user.codingHours}h`}
             subtitle="This month"
@@ -68,11 +75,11 @@ const Dashboard = () => {
           />
           <EcoCard
             title="Leaderboard Rank"
-            value={`#${user.rank}`}
+            value={`#${user.rank} `}
             subtitle="Top 15%"
             icon={<Trophy className="w-5 h-5" />}
             trend="up"
-          />
+          /> */}
         </div>
 
         {/* Quick Actions */}
@@ -119,7 +126,7 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -180,6 +187,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+     */}
       </div>
     </div>
   );
