@@ -1,0 +1,192 @@
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarHeader,
+  SidebarFooter,
+  useSidebar }
+  from "./ui/sidebar"
+//import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Button } from "./ui/button";
+import { 
+  Leaf, 
+  Code, 
+  Trophy, 
+  Gift, 
+  User,
+  LogOut,
+  Settings
+} from "lucide-react";
+
+const navigationItems = [
+  { 
+    title: "Dashboard", 
+    url: "/", 
+    icon: Leaf,
+    description: "Overview & quick actions"
+  },
+  { 
+    title: "Code Sessions", 
+    url: "/coding", 
+    icon: Code,
+    description: "Log your development work"
+  },
+  { 
+    title: "Outdoor Activities", 
+    url: "/activities", 
+    icon: Trophy,
+    description: "Submit nature activities"
+  },
+  { 
+    title: "Rewards Store", 
+    url: "/rewards", 
+    icon: Gift,
+    description: "Redeem eco-credits"
+  },
+  // { 
+  //   title: "Leaderboard", 
+  //   url: "/leaderboard", 
+  //   icon: BarChart3,
+  //   description: "Developer rankings"
+  // },
+];
+
+export function AppSidebar() {
+  const { state } = useSidebar();
+  const { user, logout } = useAuth();
+ 
+  const isCollapsed = state === "collapsed";
+
+  const getNavCls = ({ isActive }: { isActive: boolean }) =>
+    isActive 
+      ? "bg-primary/20 text-primary font-medium border-r-2 border-primary" 
+      : "hover:bg-muted/50 text-muted-foreground hover:text-foreground";
+
+  if (!user) return null;
+
+  return (
+    <Sidebar 
+      className={`border-r-2 border-border/50 ${isCollapsed ? "w-16" : "w-72"}`}
+    >
+      {/* Header */}
+      <SidebarHeader className="border-b border-border/50 p-9">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-success rounded-xl flex items-center justify-center flex-shrink-0">
+            <Leaf className="w-5 h-5 text-green-800" />
+          </div>
+          {!isCollapsed && (
+            <div className="min-w-0 mb-4">
+              <h2 className="font-bold text-lg bg-gradient-to-r from-primary to-success bg-clip-text text-transparent truncate">
+                Code-to-Nature
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Eco-Developer Platform
+              </p>
+            </div>
+          )}
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent className="px-2">
+
+        {/* Navigation */}
+        <SidebarGroup>
+          <SidebarGroupLabel className={isCollapsed ? "sr-only" : ""}>
+            Navigation
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {navigationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild className="h-12">
+                    <NavLink 
+                      to={item.url} 
+                      end 
+                      className={getNavCls}
+                    >
+                      <item.icon className="w-5 h-5 flex-shrink-0" />
+                      {!isCollapsed && (
+                        <div className="min-w-0">
+                          <div className="font-medium text-sm">
+                            {item.title}
+                          </div>
+                          <div className="text-xs opacity-70 truncate">
+                            {item.description}
+                          </div>
+                        </div>
+                      )}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      {/* Footer */}
+      <SidebarFooter className="border-t border-border/50 p-2">
+        {isCollapsed ? (
+          <div className="flex flex-col gap-1">
+            {/* <Link to="/profile"> */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full h-10 p-0"
+              title="Profile"
+            >
+              <User className="w-4 h-4" />
+            </Button>
+            {/* </Link> */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full h-10 p-0 text-destructive hover:text-destructive"
+              onClick={logout}
+              title="Logout"
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-1">
+            {/* <Link to="/profile"> */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start h-10"
+            >
+              <User className="w-4 h-4 mr-2" />
+              Profile
+            </Button>
+            {/* </Link> */}
+            <Button
+              variant="ghost"
+              size="sm" 
+              className="w-full justify-start h-10"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Settings
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={logout}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
+        )}
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
