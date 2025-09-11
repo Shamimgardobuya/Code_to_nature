@@ -7,7 +7,7 @@ class Activity(models.Model):
 
 
     user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
-    duration = models.IntegerField(null=False)
+    duration = models.TimeField(null=False)
     verification_proof = models.ImageField(upload_to='activities/', null=False)
     statuses = [
         ('PENDING' , 'pending'),
@@ -19,7 +19,17 @@ class Activity(models.Model):
     location = models.CharField(max_length=70, null=True)
     activity_date = models.DateField(default=date.today)
     description = models.TextField(null=True)
-    activity = models.CharField(max_length=50, default='Other')
+    activities = [
+        ('hiking', 'hiking'),
+        ('walking', 'walking'),
+        ('running', 'running'),
+        ('cycling', 'cycling'),
+        ('climbing', 'climbing'),
+        ('camping', 'camping'),
+        ('gardening', 'gardening'),
+        ('other', 'other')
+    ]
+    activity = models.CharField(max_length=12, choices=activities, null=False)
 
     
     class Meta:

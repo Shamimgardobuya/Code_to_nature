@@ -4,7 +4,7 @@ from datetime import date
 class ActivitiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ['id', 'user', 'duration', 'verification_proof','status', 'location', 'activity_date', 'description', 'activity', 'verified_on']
+        fields = ['id', 'duration', 'verification_proof','status', 'location', 'activity_date', 'description', 'activity', 'verified_on']
         read_only_fields= ['id', 'verified_on', 'status']
         
     def validate_verification_proof(self, value):

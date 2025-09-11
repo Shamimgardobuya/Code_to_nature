@@ -6,11 +6,15 @@ from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 
+def time_in_hrs(t):
+    delta = timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
+    return delta.total_seconds() / 3600
+
 def unlock_credits(activity_id):
     from .models import Activity
     activity = Activity.objects.get(id=activity_id)
     #guiding to points :     #1hr coding time = 10 points
-    duration_in_hrs =(activity.duration / 60)
+    duration_in_hrs = time_in_hrs(activity.duration)
     user_profile =  activity.user.profile
     locked_credits =user_profile.locked_credits
     points_to_unlock = duration_in_hrs * 10
