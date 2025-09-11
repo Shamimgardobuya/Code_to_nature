@@ -52,40 +52,43 @@ class CodingSession(models.Model):
             events = response.json()
         except ValueError:
             return timedelta()
+        
+        ALLOWED_EVENT_TYPES = {
+            "PushEvent",
+            "PullRequestEvent",
+            "PullRequestReviewEvent",
+            "IssuesEvent",
+            "IssueCommentEvent",
+        }
 
         # Parse created_at into datetime object
+        valid_events = []
         for item in events:
             if "created_at" in item:
                 try:
-                    item["created_at"] = datetime.fromisoformat(
-                        item["created_at"].replace('Z', '+00:00')
-                    )
+                    ts = datetime.fromisoformat(item["created_at"].replace("Z", "+00:00"))
+                    valid_events.append(ts)
                 except Exception as e:
                     logger.warning(f"failed to parse Guthub events date for {username}: {e}")
 
-        today = now().astimezone(timezone.utc).date()
-        logger.info(f"Fetched {len(events)} events for {username}")
-        
-        todays_events = [
-            item for item in events
-            if "created_at" in item and item["created_at"].date() == today
-            # and item.get("type") == "PushEvent"
-        ]
+        if not valid_events:
+            return timedelta(minutes=0)
+        today_utc = now().astimezone(timezone.utc).date()
+        todays_events = [t for t in valid_events if t.date() == today_utc]
 
         if not todays_events:
-            return timedelta()
+            return timedelta(minutes=0)
 
-        # sort today's events by earliest created
-        todays_events_sorted = sorted(
-            todays_events, key=lambda x: x["created_at"]
-        )
-
-        # get start_time and end_time
-        start_time = todays_events_sorted[0]["created_at"]
-        end_time = todays_events_sorted[-1]["created_at"]
+        # Compute duration
+        start_time = min(todays_events)
+        end_time = max(todays_events)
         duration = end_time - start_time
         if duration < timedelta(0):
-            return timedelta()
+            return timedelta(minutes=0)
+        elif duration == timedelta(0):
+            return timedelta(minutes=30)
+        
+        logger.info(f"{username}: {len(todays_events)} events today, duration={duration}")
         return duration
 
     @property
