@@ -37,4 +37,8 @@ class Activity(models.Model):
     
     class Meta:
         verbose_name_plural = 'Activities'
+
+    def __str__(self):
+        return f"{self.user.username}-{self.activity}-{self.status}"
+    
 auditlog.register(Activity)
