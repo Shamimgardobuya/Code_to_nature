@@ -1,47 +1,190 @@
-import { useState } from "react";
+"use client";
+
+import type React from "react";
+
+import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Textarea } from "../components/ui/textarea";
-import { 
-  Code, 
-  Plus, 
-  Clock, 
-  Calendar,
-  Leaf
-} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import { Code, Plus, Clock, Calendar, Leaf, Loader2 } from "lucide-react";
 import { useToast } from "../hooks/use-toast";
+import { useAuth } from "../contexts/AuthContext";
+
+// Types for API responses
+interface CodingSession {
+  id: string;
+  duration: string;
+  source: string;
+  created_at: string;
+  credits_awarded: number;
+  status: "Locked" | "Unlocked";
+  userid: string;
+}
+
+interface ApiResponse<T> {
+  data: T;
+  message?: string;
+}
 
 const CodingSessions = () => {
+  const { user, loading } = useAuth();
+  const [sessions, setSessions] = useState<CodingSession[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingSessions, setIsLoadingSessions] = useState(true);
+
   const [formData, setFormData] = useState({
-    projectName: "",
+    type: "",
     hours: "",
-    description: "",
-    date: new Date().toISOString().split('T')[0]
   });
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Coding session logged!",
-      description: `${formData.hours} hours added to ${formData.projectName}`,
-    });
-    setFormData({
-      projectName: "",
-      hours: "",
-      description: "",
-      date: new Date().toISOString().split('T')[0]
-    });
+  const API_BASE_URL =
+  import.meta.env.VITE_API_URL 
+ 
+
+  // Fetch sessions from backend
+  const fetchSessions = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!user) return;
+
+    try {
+      setIsLoadingSessions(true);
+      const response = await fetch(
+        `${API_BASE_URL}/codingsessions/?user=${user.user}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Adjust based on your auth implementation
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result: ApiResponse<CodingSession[]> = await response.json();
+      setSessions(result.data || []);
+    } catch (error) {
+      console.error("Error fetching sessions:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load coding sessions. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingSessions(false);
+    }
   };
 
-  const sessions = [
-    { id: 1, project: "E-commerce Dashboard", hours: 3.5, date: "2024-01-15", credits: 18, status: "Locked" },
-    { id: 2, project: "Mobile App API", hours: 2.0, date: "2024-01-14", credits: 10, status: "Locked" },
-    { id: 3, project: "React Components", hours: 4.2, date: "2024-01-13", credits: 21, status: "Unlocked" },
-    { id: 4, project: "Database Migration", hours: 1.5, date: "2024-01-12", credits: 8, status: "Unlocked" },
-  ];
+  // Submit new session to backend
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    //get token
+    const token = localStorage.getItem("authToken");
+
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "User not authenticated. Please log in again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const hours = Number.parseFloat(formData.hours);
+      const durationHours = Math.floor(hours);
+      const durationMinutes = Math.floor((hours - durationHours) * 60);
+      const duration = `${durationHours
+        .toString()
+        .padStart(2, "0")}:${durationMinutes.toString().padStart(2, "0")}:00`;
+
+      const sessionData = {
+        user: user.user,
+        duration: duration,
+        source: formData.type,
+      };
+
+      const response = await fetch(
+        `${API_BASE_URL}/codingsessions/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Adjust based on your auth implementation
+          },
+          body: JSON.stringify(sessionData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // const result: ApiResponse<CodingSession> = await response.json();
+
+      toast({
+        title: "Success!",
+        description: `${duration} logged for ${formData.type} session `,
+      });
+
+      // Reset form
+      setFormData({
+        type: "",
+        hours: "",
+      });
+
+      // Refresh sessions list
+      await fetchSessions();
+    } catch (error) {
+      console.error("Error submitting session:", error);
+      toast({
+        title: "Error",
+        description: "Failed to log coding session. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Fetch sessions when component mounts or user changes
+  useEffect(() => {
+    if (user && !loading) {
+      fetchSessions();
+    }
+  }, [user, loading]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading user profile...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -51,7 +194,9 @@ const CodingSessions = () => {
         </div>
         <div>
           <h1 className="text-3xl font-bold">Coding Sessions</h1>
-          <p className="text-muted-foreground">Log your development work to earn eco-credits</p>
+          <p className="text-muted-foreground">
+            Log your development work to earn eco-credits
+          </p>
         </div>
       </div>
 
@@ -67,18 +212,26 @@ const CodingSessions = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="projectName">Project Name</Label>
-                <Input
-                  id="projectName"
-                  placeholder="e.g., React Dashboard, API Integration"
-                  value={formData.projectName}
-                  onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
-                  required
-                />
+                <Label htmlFor="type">Session Type</Label>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, type: value })
+                  }
+                  disabled={isSubmitting}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select session type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="manual">Manual</SelectItem>
+                    {/* <SelectItem value="github">GitHub</SelectItem> */}
+                  </SelectContent>
+                </Select>
               </div>
-              
+
               <div>
-                <Label htmlFor="hours">Hours Worked</Label>
+                <Label htmlFor="hours">Duration (Hours)</Label>
                 <Input
                   id="hours"
                   type="number"
@@ -87,36 +240,31 @@ const CodingSessions = () => {
                   max="24"
                   placeholder="2.5"
                   value={formData.hours}
-                  onChange={(e) => setFormData({ ...formData, hours: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, hours: e.target.value })
+                  }
+                  disabled={isSubmitting}
                   required
                 />
               </div>
 
-              <div>
-                <Label htmlFor="date">Date</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Description (Optional)</Label>
-                <Textarea
-                  id="description"
-                  placeholder="What did you work on?"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                />
-              </div>
-
-              <Button type="submit" className="w-full" size="lg">
-                <Code className="w-4 h-4 mr-2" />
-                Log Session
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+                disabled={isSubmitting || !formData.type || !formData.hours}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Logging Session...
+                  </>
+                ) : (
+                  <>
+                    <Code className="w-4 h-4 mr-2" />
+                    Log Session
+                  </>
+                )}
               </Button>
             </form>
           </CardContent>
@@ -124,41 +272,77 @@ const CodingSessions = () => {
 
         {/* Session History */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Recent Sessions</h2>
-          {sessions.map((session) => (
-            <Card key={session.id} className="border-2 hover:shadow-md transition-all">
-              <CardContent className="p-4">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-semibold text-foreground">{session.project}</h3>
-                    <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {session.hours}h
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {new Date(session.date).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1 text-primary font-semibold">
-                      <Leaf className="w-4 h-4" />
-                      {session.credits}
-                    </div>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      session.status === 'Unlocked' 
-                        ? 'bg-success/20 text-success' 
-                        : 'bg-warning/20 text-warning'
-                    }`}>
-                      {session.status}
-                    </span>
-                  </div>
-                </div>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Recent Sessions</h2>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchSessions}
+              disabled={isLoadingSessions}
+            >
+              {isLoadingSessions ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Refresh"
+              )}
+            </Button>
+          </div>
+
+          {isLoadingSessions ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-center">
+                <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  Loading sessions...
+                </p>
+              </div>
+            </div>
+          ) : sessions.length === 0 ? (
+            <Card className="border-2 border-dashed">
+              <CardContent className="p-8 text-center">
+                <Code className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground">
+                  No coding sessions yet. Log your first session!
+                </p>
               </CardContent>
             </Card>
-          ))}
+          ) : (
+            sessions.map((session) => (
+              <Card
+                key={session.created_at}
+                className="border-2 hover:shadow-md transition-all"
+              >
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {session.duration}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {new Date(session.created_at).toLocaleDateString()}
+                        </span>
+                        <span className="text-xs bg-muted px-2 py-1 rounded">
+                          {session.source}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center gap-1 text-primary font-semibold">
+                        <Leaf className="w-4 h-4" />
+                        {session.credits_awarded}
+                      </div>
+                      <span className="text-xs px-2 py-1 rounded-full bg-warning/20 text-warning">
+                        locked
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </div>
     </div>

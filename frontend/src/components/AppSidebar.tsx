@@ -20,7 +20,6 @@ import {
   Code, 
   Trophy, 
   Gift, 
-  BarChart3,
   User,
   LogOut,
   Settings
@@ -51,12 +50,12 @@ const navigationItems = [
     icon: Gift,
     description: "Redeem eco-credits"
   },
-  { 
-    title: "Leaderboard", 
-    url: "/leaderboard", 
-    icon: BarChart3,
-    description: "Developer rankings"
-  },
+  // { 
+  //   title: "Leaderboard", 
+  //   url: "/leaderboard", 
+  //   icon: BarChart3,
+  //   description: "Developer rankings"
+  // },
 ];
 
 export function AppSidebar() {
@@ -80,10 +79,10 @@ export function AppSidebar() {
       <SidebarHeader className="border-b border-border/50 p-9">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-primary to-success rounded-xl flex items-center justify-center flex-shrink-0">
-            <Leaf className="w-5 h-5 text-white" />
+            <Leaf className="w-5 h-5 text-green-800" />
           </div>
           {!isCollapsed && (
-            <div className="min-w-0">
+            <div className="min-w-0 mb-4">
               <h2 className="font-bold text-lg bg-gradient-to-r from-primary to-success bg-clip-text text-transparent truncate">
                 Code-to-Nature
               </h2>
@@ -130,35 +129,13 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        {/* Quick Stats */}
-        {/* {!isCollapsed && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Quick Stats</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <div className="px-3 py-2 space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Rank</span>
-                  <span className="font-medium">#{user.rank}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Activities</span>
-                  <span className="font-medium">{user.activitiesCount}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Coding Hours</span>
-                  <span className="font-medium">{user.codingHours}h</span>
-                </div>
-              </div>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )} */}
       </SidebarContent>
 
       {/* Footer */}
       <SidebarFooter className="border-t border-border/50 p-2">
         {isCollapsed ? (
           <div className="flex flex-col gap-1">
+            {/* <Link to="/profile"> */}
             <Button
               variant="ghost"
               size="sm"
@@ -167,6 +144,7 @@ export function AppSidebar() {
             >
               <User className="w-4 h-4" />
             </Button>
+            {/* </Link> */}
             <Button
               variant="ghost"
               size="sm"
@@ -179,6 +157,7 @@ export function AppSidebar() {
           </div>
         ) : (
           <div className="space-y-1">
+            {/* <Link to="/profile"> */}
             <Button
               variant="ghost"
               size="sm"
@@ -187,6 +166,7 @@ export function AppSidebar() {
               <User className="w-4 h-4 mr-2" />
               Profile
             </Button>
+            {/* </Link> */}
             <Button
               variant="ghost"
               size="sm" 

@@ -4,24 +4,31 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
+import { Alert, AlertDescription } from "../components/ui/alert";
 import { Link, useNavigate } from "react-router-dom";
-import { Leaf, Mail, Lock, User, Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+  Leaf,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import { useToast } from "../hooks/use-toast";
 import { useAuth } from "../contexts/AuthContext";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    username: "",
     email: "",
     password: "",
     confirmPassword: ""
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { toast } = useToast();
-  const { signup, loading } = useAuth();
+  const { signup, loading ,error } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,9 +53,6 @@ const Signup = () => {
     }
 
     const success = await signup({
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      username: formData.username,
       email: formData.email,
       password: formData.password
     });
@@ -59,12 +63,6 @@ const Signup = () => {
         description: "Your account has been created successfully.",
       });
       navigate("/");
-    } else {
-      toast({
-        title: "Signup failed",
-        description: "Email or username already exists. Please try different credentials.",
-        variant: "destructive"
-      });
     }
   };
 
@@ -94,49 +92,13 @@ const Signup = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {error && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="firstName"
-                      placeholder="John"
-                      className="pl-10"
-                      value={formData.firstName}
-                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName"
-                    placeholder="Doe"
-                    value={formData.lastName}
-                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="username"
-                    placeholder="johndoe"
-                    className="pl-10"
-                    value={formData.username}
-                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
