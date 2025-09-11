@@ -13,11 +13,23 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='activity',
             name='activity',
-            field=models.CharField(choices=[('hiking', 'hiking'), ('walking', 'walking'), ('running', 'running'), ('cycling', 'cycling'), ('climbing', 'climbing'), ('camping', 'camping'), ('gardening', 'gardening'), ('other', 'other')], max_length=12),
+            field=models.CharField(
+                choices=[
+                    ('hiking', 'hiking'),
+                    ('walking', 'walking'),
+                    ('running', 'running'),
+                    ('cycling', 'cycling'),
+                    ('climbing', 'climbing'),
+                    ('camping', 'camping'),
+                    ('gardening', 'gardening'),
+                    ('other', 'other')
+                ],
+                max_length=25,
+            ),
         ),
-        migrations.AlterField(
+        migrations.AddField(
             model_name='activity',
-            name='duration',
-            field=models.TimeField(),
+            name='duration_tmp',
+            field=models.TimeField(null=True),
         ),
     ]
