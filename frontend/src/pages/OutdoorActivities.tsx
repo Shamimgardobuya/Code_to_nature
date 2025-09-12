@@ -144,7 +144,7 @@ const OutdoorActivities = () => {
           body: formDataToSend,
         }
       );
-      //console.log("Response for FormDatatoSend: ", response)
+      // console.log("Response for FormDatatoSend: ", response)
 
       if (response.ok) {
         const newActivity = await response.json();
