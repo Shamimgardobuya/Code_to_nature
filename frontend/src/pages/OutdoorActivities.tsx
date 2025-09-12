@@ -83,7 +83,7 @@ const OutdoorActivities = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("data: ", data)
+        // console.log("data: ", data)
         const allActivities = data.data || data;
         setActivities(allActivities);
       }
@@ -132,9 +132,9 @@ const OutdoorActivities = () => {
         // console.log("FormData: ", formDataToSend)
       }
 
-      for (let pair of formDataToSend.entries()) {
+      {/*for (let pair of formDataToSend.entries()) {
          console.log(pair[0], pair[1]);
-      }
+      }*/}
 
       const response = await fetch(
         `${API_BASE_URL}/activities/`,
@@ -144,7 +144,7 @@ const OutdoorActivities = () => {
           body: formDataToSend,
         }
       );
-      console.log("Response for FormDatatoSend: ", response)
+      // console.log("Response for FormDatatoSend: ", response)
 
       if (response.ok) {
         const newActivity = await response.json();
