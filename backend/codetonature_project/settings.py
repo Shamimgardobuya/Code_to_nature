@@ -53,7 +53,10 @@ INSTALLED_APPS = [
     'apps.activities',
     'apps.rewards',
     'apps.leaderboard',
-    'apps.common'
+    'apps.common',
+    'rest_framework_simplejwt.token_blacklist',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -99,6 +102,8 @@ DATABASES = {
         conn_max_age=600
     )
 }
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -151,8 +156,10 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 GITHUB_TASK_SECRET = os.environ.get("GITHUB_TASK_SECRET")
