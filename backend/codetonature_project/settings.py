@@ -3,6 +3,9 @@ from datetime import timedelta
 import os
 import dj_database_url
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 import logging
 
 load_dotenv()
@@ -43,7 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage', # placement is important
     'django.contrib.staticfiles',
+    'cloudinary',
     'django_extensions',
     'auditlog',
     'corsheaders',
@@ -55,8 +60,6 @@ INSTALLED_APPS = [
     'apps.leaderboard',
     'apps.common',
     'rest_framework_simplejwt.token_blacklist',
-    'cloudinary',
-    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
