@@ -162,6 +162,7 @@ import { setupTokenInterceptor } from "../utils/tokenUtils";
 import { login as apiLogin, register as apiRegister } from "../services/api";
 
 export interface Profile {
+  id:number;
   user: number;
   profile_pic: string | null;
   github_username: string | null;
@@ -170,6 +171,7 @@ export interface Profile {
   locked_credits: number;
   current_streak: number;
   longest_streak: number;
+  // friends # Array
 }
 
 interface SignupData {
@@ -209,6 +211,7 @@ export const useAuth = () => {
 
 // Helper to map API response to Profile type
 const mapToProfile = (data: any): Profile => ({
+  id:data.id,
   user: data.id,
   profile_pic: data.profile_pic ?? null,
   github_username: data.github_username ?? null,
@@ -238,7 +241,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const token = localStorage.getItem("authToken");
         if (token) {
           const userResponse = await ApiService.get<UserResponse>("/profiles/me/");
-          setUser(mapToProfile(userResponse.data));
+          // setUser(mapToProfile(userResponse.data));
+          setUser(userResponse.data.data);
         }
       } catch (err) {
         console.error("Failed to initialize auth:", err);
@@ -283,7 +287,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("authToken", loginResponse.data.access);
 
       const userResponse = await ApiService.get<UserResponse>("/profiles/me/");
-      setUser(mapToProfile(userResponse.data));
+      // setUser(mapToProfile(userResponse.data));
+      setUser(userResponse.data.data);
 
       setLoading(false);
       return true;

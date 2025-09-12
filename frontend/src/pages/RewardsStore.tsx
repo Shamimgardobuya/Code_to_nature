@@ -30,11 +30,10 @@ import {
   Loader2,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import type {Profile} from "../contexts/AuthContext";
 import { useToast } from "../hooks/use-toast";
 import { rewardService } from "../services/rewards";
 import type { Reward, Redemption } from "../services/rewards";
-import { getProfile } from "../services/api";
+// import { getProfile } from "../services/api";
 
 // Icon mapping
 const iconMap: { [key: string]: React.JSX.Element } = {
@@ -51,7 +50,7 @@ const iconMap: { [key: string]: React.JSX.Element } = {
 };
 
 export default function RewardsStore() {
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
@@ -66,37 +65,28 @@ export default function RewardsStore() {
     const token = localStorage.getItem("authToken");
     if (token) rewardService.updateToken(token);
 
-    fetchProfile();
     fetchRewards();
     fetchRedemptions();
   }, []);
 
-  const mapToProfile = (data: any): Profile => ({
-    user: data.id,
-    profile_pic: data.profile_pic ?? null,
-    github_username: data.github_username ?? null,
-    github_token: data.github_token ?? null,
-    eco_credits: data.eco_credits ?? 0,
-    locked_credits: data.locked_credits ?? 0,
-    current_streak: data.current_streak ?? 0,
-    longest_streak: data.longest_streak ?? 0,
-  });
 
-  const fetchProfile = async () => {
-    try {
-      const profileData = await getProfile();
-      setUser(mapToProfile(profileData));
-    } catch (error: any) {
-      console.error("Error fetching profile:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to load profile details.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading((prev) => ({ ...prev, profile: false }));
-    }
-  };
+
+  // const fetchProfile = async () => {
+  //   try {
+  //     const profileData = await getProfile();
+  //     // setUser(mapToProfile(profileData));
+  //     setUser(profileData.data)
+  //   } catch (error: any) {
+  //     console.error("Error fetching profile:", error);
+  //     toast({
+  //       title: "Error",
+  //       description: error.message || "Failed to load profile details.",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setLoading((prev) => ({ ...prev, profile: false }));
+  //   }
+  // };
 
   const fetchRewards = async () => {
     try {
@@ -137,11 +127,6 @@ export default function RewardsStore() {
 
     try {
       const data = await rewardService.redeemReward(parseInt(reward.id));
-      setUser({
-        ...user,
-        eco_credits: data.remaining_credits ?? user.eco_credits,
-      });
-
       const newRedemption: Redemption = data.redemption;
       setRedemptions([newRedemption, ...redemptions]);
 
