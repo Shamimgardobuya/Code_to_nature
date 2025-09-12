@@ -83,7 +83,7 @@ const OutdoorActivities = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("data: ", data)
+        // console.log("data: ", data)
         const allActivities = data.data || data;
         setActivities(allActivities);
       }
@@ -129,12 +129,12 @@ const OutdoorActivities = () => {
           "verification_proof",
           formData.verification_proof
         );
-        console.log("FormData: ", formDataToSend)
+        // console.log("FormData: ", formDataToSend)
       }
 
-      for (let pair of formDataToSend.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      {/*for (let pair of formDataToSend.entries()) {
+         console.log(pair[0], pair[1]);
+      }*/}
 
       const response = await fetch(
         `${API_BASE_URL}/activities/`,
@@ -144,7 +144,7 @@ const OutdoorActivities = () => {
           body: formDataToSend,
         }
       );
-      console.log("Response for FormDatatoSend: ", response)
+      //console.log("Response for FormDatatoSend: ", response)
 
       if (response.ok) {
         const newActivity = await response.json();
@@ -182,7 +182,7 @@ const OutdoorActivities = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      console.log("Selected file:", e.target.files[0]);
+      // console.log("Selected file:", e.target.files[0]);
       setFormData({ ...formData, verification_proof: e.target.files[0] });
     }
   };
