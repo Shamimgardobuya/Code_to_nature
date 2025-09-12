@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'apps.leaderboard',
     'apps.common',
     'rest_framework_simplejwt.token_blacklist',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
