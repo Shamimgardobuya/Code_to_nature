@@ -3,9 +3,6 @@ from datetime import timedelta
 import os
 import dj_database_url
 from dotenv import load_dotenv
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 import logging
 
 load_dotenv()
@@ -46,8 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage', # placement is important
     'django.contrib.staticfiles',
+    'cloudinary_storage', # placement is important
     'cloudinary',
     'django_extensions',
     'auditlog',
@@ -113,8 +110,8 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-# MEDIA_URL = "/media/"
-# MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
