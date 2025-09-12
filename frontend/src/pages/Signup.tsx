@@ -71,16 +71,16 @@ const Signup = () => {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-success rounded-2xl flex items-center justify-center">
-              <Leaf className="w-8 h-8 text-white" />
+          <div className="flex justify-center mb-2">
+            <div className="flex justify-center mb-1">
+              <Leaf className="h-8 w-8 text-green-600" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold text-green-800 mb-2 text-balance">
             Code-to-Nature
           </h1>
           <p className="text-muted-foreground mt-2">
-            Start your eco-coding journey today
+            Welcome back to your eco-coding journey
           </p>
         </div>
 
