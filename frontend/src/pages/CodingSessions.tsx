@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import {
@@ -26,11 +25,12 @@ import { useAuth } from "../contexts/AuthContext";
 // Types for API responses
 interface CodingSession {
   id: string;
+  session_name: string;
   duration: string;
   source: string;
   created_at: string;
   credits_awarded: number;
-  status: "Locked" | "Unlocked";
+  status: string;
   userid: string;
 }
 
@@ -46,14 +46,14 @@ const CodingSessions = () => {
   const [isLoadingSessions, setIsLoadingSessions] = useState(true);
 
   const [formData, setFormData] = useState({
+    sessionName: "",
     type: "",
     hours: "",
   });
+
   const { toast } = useToast();
 
-  const API_BASE_URL =
-  import.meta.env.VITE_API_URL 
- 
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   // Fetch sessions from backend
   const fetchSessions = async () => {
@@ -62,16 +62,13 @@ const CodingSessions = () => {
 
     try {
       setIsLoadingSessions(true);
-      const response = await fetch(
-        `${API_BASE_URL}/codingsessions/?user=${user.user}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Adjust based on your auth implementation
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/codingsessions/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -95,7 +92,6 @@ const CodingSessions = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    //get token
     const token = localStorage.getItem("authToken");
 
     if (!user) {
@@ -118,36 +114,32 @@ const CodingSessions = () => {
         .padStart(2, "0")}:${durationMinutes.toString().padStart(2, "0")}:00`;
 
       const sessionData = {
-        user: user.user,
         duration: duration,
+        session_name: formData.sessionName,
         source: formData.type,
       };
 
-      const response = await fetch(
-        `${API_BASE_URL}/codingsessions/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Adjust based on your auth implementation
-          },
-          body: JSON.stringify(sessionData),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/codingsessions/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(sessionData),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // const result: ApiResponse<CodingSession> = await response.json();
-
       toast({
         title: "Success!",
-        description: `${duration} logged for ${formData.type} session `,
+        description: `${formData.sessionName} logged for ${formData.type} session `,
       });
 
       // Reset form
       setFormData({
+        sessionName: "",
         type: "",
         hours: "",
       });
@@ -172,6 +164,7 @@ const CodingSessions = () => {
       fetchSessions();
     }
   }, [user, loading]);
+  // console.log("User data in Dashboard:", user);
 
   if (loading) {
     return (
@@ -211,6 +204,18 @@ const CodingSessions = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="sessionName">Session Name</Label>
+                <Input
+                  id="sessionName"
+                  placeholder="e.g., React Dashboard, API Integration"
+                  value={formData.sessionName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, sessionName: e.target.value })
+                  }
+                  required
+                />
+              </div>
               <div>
                 <Label htmlFor="type">Session Type</Label>
                 <Select
@@ -252,7 +257,9 @@ const CodingSessions = () => {
                 type="submit"
                 className="w-full"
                 size="lg"
-                disabled={isSubmitting || !formData.type || !formData.hours}
+                disabled={
+                  isSubmitting || !formData.type || !formData.hours || !formData.sessionName
+                }
               >
                 {isSubmitting ? (
                   <>
@@ -309,12 +316,15 @@ const CodingSessions = () => {
           ) : (
             sessions.map((session) => (
               <Card
-                key={session.created_at}
+                key={session.id}
                 className="border-2 hover:shadow-md transition-all"
               >
                 <CardContent className="p-4">
                   <div className="flex justify-between items-start mb-3">
                     <div>
+                      <h3 className="font-semibold text-foreground">
+                        {session.session_name}
+                      </h3>
                       <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
@@ -334,8 +344,14 @@ const CodingSessions = () => {
                         <Leaf className="w-4 h-4" />
                         {session.credits_awarded}
                       </div>
-                      <span className="text-xs px-2 py-1 rounded-full bg-warning/20 text-warning">
-                        locked
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          session.status === "Unlocked"
+                            ? "bg-success/20 text-warning"
+                            : "bg-warning/20 text-green-800"
+                        }`}
+                      >
+                        {session.status}
                       </span>
                     </div>
                   </div>

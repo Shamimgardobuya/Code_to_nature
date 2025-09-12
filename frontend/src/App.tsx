@@ -12,7 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import CodingSessions from "./pages/CodingSessions";
 import OutdoorActivities from "./pages/OutdoorActivities";
 import RewardsStore from "./pages/RewardsStore";
-// import Leaderboard from "./pages/Leaderboard";
+import Leaderboard from "./pages/Leaderboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
@@ -68,7 +68,7 @@ const App = () => (
               <Route path="coding" element={<CodingSessions />} />
               <Route path="activities" element={<OutdoorActivities />} />
               <Route path="rewards" element={<RewardsStore />} />
-              {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
+              <Route path="leaderboard" element={<Leaderboard />} />
               {/* <Route path="profile" element={<ProfilePage />} /> */}
               <Route path="*" element={<NotFound />} />
             </Route>

@@ -10,9 +10,7 @@ import { useAuth } from "../contexts/AuthContext";
 import {
   Leaf,
   Code,
-  // Trophy,
   Clock,
-  // TrendingUp,
   MapPin,
   Plus,
 } from "lucide-react";
@@ -123,70 +121,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
-
-        {/* Recent Activity */}
-        {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-accent" />
-                Recent Coding Sessions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {[
-                  { project: "React Dashboard", hours: "3.5h", date: "Today" },
-                  { project: "API Integration", hours: "2.0h", date: "Yesterday" },
-                  { project: "UI Components", hours: "4.2h", date: "2 days ago" },
-                ].map((session, idx) => (
-                  <div key={idx} className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
-                    <div>
-                      <p className="font-medium">{session.project}</p>
-                      <p className="text-sm text-muted-foreground">{session.date}</p>
-                    </div>
-                    <div className="text-primary font-semibold">
-                      {session.hours}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-success" />
-                Recent Activities
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {[
-                  { activity: "Forest Hike", credits: "+15", status: "Verified" },
-                  { activity: "Beach Walk", credits: "+8", status: "Pending" },
-                  { activity: "Mountain Bike", credits: "+12", status: "Verified" },
-                ].map((activity, idx) => (
-                  <div key={idx} className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
-                    <div>
-                      <p className="font-medium">{activity.activity}</p>
-                      <p className={`text-sm ${
-                        activity.status === "Verified" ? "text-success" : "text-warning"
-                      }`}>
-                        {activity.status}
-                      </p>
-                    </div>
-                    <div className="text-success font-semibold">
-                      {activity.credits}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-     */}
       </div>
     </div>
   );
