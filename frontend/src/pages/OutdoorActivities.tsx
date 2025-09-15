@@ -44,7 +44,7 @@ const OutdoorActivities = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const token = localStorage.getItem("authToken");
-  const userId = user ? user.user : ""
+  // const userId = user ? user.user : ""
 
   const [formData, setFormData] = useState<{
     activity: string;
