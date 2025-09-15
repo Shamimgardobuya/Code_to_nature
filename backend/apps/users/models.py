@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from codetonature_project.image_field_storage import get_image_field
 
 # Create your models here.
 class CustomUser(AbstractUser):
@@ -14,8 +14,8 @@ class CustomUser(AbstractUser):
 class Profile(models.Model):
     """User Profile"""
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(
-        upload_to="profiles/", blank=True, null=True
+    profile_pic = get_image_field(
+    "profiles", null=True
     )
     github_username = models.CharField(max_length=39, blank=True, null=True)
     github_token = models.UUIDField(blank=True, null=True)
