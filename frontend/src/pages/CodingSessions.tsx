@@ -46,7 +46,7 @@ const CodingSessions = () => {
   const [isLoadingSessions, setIsLoadingSessions] = useState(true);
   const token = localStorage.getItem("authToken");
 
-  const userId = user ? user.user : ""
+  const userId = user ? user.id : ""
 
   // console.log("UserId: ", userId)
 
@@ -66,7 +66,7 @@ const CodingSessions = () => {
 
     try {
       setIsLoadingSessions(true);
-      const response = await fetch(`${API_BASE_URL}/codingsessions/`, {
+      const response = await fetch(`${API_BASE_URL}/codingsessions?user=${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +122,7 @@ const CodingSessions = () => {
         user: userId,
         source: formData.type,
       };
-      //console.log("sessionData: ", sessionData)
+      // console.log("sessionData: ", sessionData)
 
       const response = await fetch(`${API_BASE_URL}/codingsessions/`, {
         method: "POST",

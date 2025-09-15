@@ -44,6 +44,7 @@ const OutdoorActivities = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const token = localStorage.getItem("authToken");
+  const userId = user ? user.user : ""
 
   const [formData, setFormData] = useState<{
     activity: string;
@@ -72,6 +73,8 @@ const OutdoorActivities = () => {
   const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   const fetchActivities = async () => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         `${API_BASE_URL}/activities/`,
