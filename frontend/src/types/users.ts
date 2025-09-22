@@ -7,6 +7,7 @@ export interface User {
 export interface Profile {
   user: User;
   profile_pic: string | null;
+  profile_pic_url: string | null;
   github_username: string | null;
   github_token: string | null;
   eco_credits: number;
