@@ -46,7 +46,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ['user']
     
     def get_profile_pic_url(self, obj):
-        return obj.profile_pic.url
+        if obj.profile_pic:
+            return obj.profile_pic.url
+        return None
+
 
     def update(self, instance, validated_data):
         """Update profile"""
