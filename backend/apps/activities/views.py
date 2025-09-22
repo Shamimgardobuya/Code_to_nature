@@ -42,34 +42,3 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED
         )
     
-    @action(detail=True, methods=['post'], permission_classes = [IsAdminUser])#custom viewset function
-    def verify_activity(self, request, pk=None):
-        """ Custom action to verify an activity. Only admins can perform this action. """
-        try:
-            activity = self.get_object()
-            statuses = ['PENDING', 'REJECTED'] #do not verify an already verified activity
-            if activity.status in statuses:
-                activity.status = 'VERIFIED' #assigning new value of status
-                activity.verified_on = datetime.now()
-                activity.save()
-                
-                unlock_credits(activity.id) #performs unlocking the credit
-                serializer = self.get_serializer(activity)
-
-                return Response(
-                            {"success": True, 
-                             "data": serializer.data
-                             },
-                            status=status.HTTP_201_CREATED,
-                )
-            return Response(
-                            {"success": True,
-                             "data": serializer.data
-                             },
-                            status=status.HTTP_400_BAD_REQUEST,
-                )
-            
-        except Exception as e:
-            return Response(
-                            {"error occurred": str(e)}
-            )
