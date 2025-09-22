@@ -6,8 +6,7 @@ class CustomerUserSerializer(serializers.ModelSerializer):
     """Customer User serializer"""
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'password', 'username', 'profile_pic_url']
-        read_only_fields = ['profile_pic_url']
+        fields = ['id', 'email', 'password', 'username']
         extra_kwargs = {
             "password": {"write_only": True},
             "username": {"required": False},
@@ -44,7 +43,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'friends',
             'profile_pic_url'
         ]
-        read_only_fields = ['user', 'profile_pic_url']
+        read_only_fields = ['user']
     
     def get_profile_pic_url(self, obj):
         return obj.profile_pic.url
