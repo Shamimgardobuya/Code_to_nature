@@ -26,6 +26,7 @@ class CustomerUserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     """Profile Serializer"""
     user_id = serializers.IntegerField(source='user.id', read_only=True)
+    profile_pic_url = serializers.SerializerMethodField()
     class Meta:
         model = Profile
         fields = [
@@ -39,9 +40,16 @@ class ProfileSerializer(serializers.ModelSerializer):
             'locked_credits',
             'current_streak',
             'longest_streak',
-            'friends'
+            'friends',
+            'profile_pic_url'
         ]
         read_only_fields = ['user']
+    
+    def get_profile_pic_url(self, obj):
+        if obj.profile_pic:
+            return obj.profile_pic.url
+        return None
+
 
     def update(self, instance, validated_data):
         """Update profile"""

@@ -3,12 +3,12 @@ from apps.users.models import CustomUser
 from datetime import date, time
 from auditlog.registry import auditlog
 # Create your models here.
-
+from codetonature_project.image_field_storage import get_image_field
 
 class Activity(models.Model):
     user = models.ForeignKey(CustomUser, null=False, on_delete=models.CASCADE)
     duration = models.TimeField(null=False, default=time(0, 0))
-    verification_proof = models.ImageField(upload_to='activities/', null=False)
+    verification_proof = get_image_field('activities', null=False)
     statuses = [
         ('PENDING' , 'pending'),
         ('VERIFIED' , 'verified'),
